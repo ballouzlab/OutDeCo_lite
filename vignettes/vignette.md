@@ -23,33 +23,23 @@ vignette: >
   %\VignetteEngine{knitr::rmarkdown} 
 ---
 
-
-    
-```{r setup, include=FALSE}
-knitr::opts_chunk$set(echo = TRUE)
-```
-
+# OutDeCo: Outlier detection through co-expression
+![Sticker](./figures/sticker.png "")
 
 # Introduction 
 This manual provides an overview of the Bioconductor package *OutDeCo* for differential expression outlier analysis using co-expression. 
-
-![Sticker](./figures/sticker.png "")
  
 
 ## Is this for you?
 The purpose of this package is to assess genes - more specifically differentially expressed genes - with respect to their co-expression properties. 
-
 
 ## What do we mean by "functional outliers"? 
 Genes do not act alone. They participate in pathways (genetic interactions) or form complexes (physical interactions), each of which defines their function. An approach to assess their functions is to look to differential expression, where we assay the transcriptome and search for differences between conditions. Since one way to think of gene function is to consider disease, i.e., where systems break down or respond unusually to a perturbation, differential expression is a typical approach. This is usually followed by a gene set enrichment analysis to discover the common theme or function in the set of genes. 
 
 However, this misses an interesting and potentially important counterfactual. What if the genes are no-longer functioning in their respective roles i.e., with their common interacting partners? Rather, it might be that genes acting uncharacteristically are of relevance to the dysfunction. We call these rogue actor genes “functional outliers”. In this scenario, a gene set enrichment analysis will miss these genes. 
 
-
- 
 ![principle](./figures/fig_outliers_network.png)
 
-Gene networks are commonly used as a means of representing relationships between genes. 
 
 
 ## What you can do with this package
@@ -74,7 +64,7 @@ Although not necessary, this method runs best on a HPC with 20GB+ RAM. However, 
 
 
 ## What is in this user guide
-This manual contains a usage and descriptions of the package. 
+This manual contains a usage guide and descriptions of the package. 
 
 
 ## Citations
@@ -116,8 +106,9 @@ load("../out_test/junk/goslim.Rdata")
 # Package Overview
 In this section we give an overview of the core functions and main features of the package. For usage and applications see the examples in the following sections. In addition, concise examples are included in the function documentation.
 
+Gene networks are commonly used as a means of representing relationships between genes. 
 
-
+ 
 # User Guide
 ## Using the package to run a differential expression analysis 
 
