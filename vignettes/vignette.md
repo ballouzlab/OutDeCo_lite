@@ -1,29 +1,4 @@
----
-title: "OutDeCo: Outlier detection through co-expression"
-author: "Sara Ballouz"
-date: "February 2020"
-output: 
-  html_document:
-    number_sections: yes
-    toc: yes
-    toc_depth: 3
-    toc_float: yes
-  word_document:
-    toc: yes
-    toc_depth: '3' 
-  pdf_document:
-    toc: yes
-    toc_depth: '3'
-  rmarkdown::html_vignette: 
-graphics: yes
-bibliography: OutDeCo.bib
-vignette: >
-  %\VignetteIndexEntry{Functional outlier analysis} 
-  %\usepackage[utf8]{inputenc}
-  %\VignetteEngine{knitr::rmarkdown} 
----
-![Sticker](./figures/sticker2.png "")
-# OutDeCo: Outlier detection through co-expression
+# OutDeCo: Outlier detection through co-expression <img src="./figures/sticker2.png" align="right" height = 150/>
 
 # Introduction 
 This manual provides an overview of the Bioconductor package *OutDeCo* for differential expression outlier analysis using co-expression. 
