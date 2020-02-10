@@ -89,16 +89,11 @@ To view this documentation in R, enter
 browseVignettes("OutDeCo")
 ```
 
-Alternatively, use devtools. 
-```{r}
-devtools::load_all("../")
-# source("S:/bin/helper.r")
-root_dir <- "S:/"
-GLOBAL_DIR <- paste0(root_dir, "/data/agg_coexp/")
-recur_cols <- gplots::colorpanel(100, "white", "orange", "deeppink4")
-library(EGAD)
-load("../out_test/junk/goslim.Rdata")
-
+Alternatively, use devtools for the development version. 
+```{r , eval=FALSE}
+# Or the development version from GitHub:
+# install.packages("devtools")
+devtools::install_github("sarbal/OutDeCo")
 ```
 
 
