@@ -22,9 +22,8 @@ vignette: >
   %\usepackage[utf8]{inputenc}
   %\VignetteEngine{knitr::rmarkdown} 
 ---
-
-# OutDeCo: Outlier detection through co-expression
 ![Sticker](./figures/sticker2.png "")
+# OutDeCo: Outlier detection through co-expression
 
 # Introduction 
 This manual provides an overview of the Bioconductor package *OutDeCo* for differential expression outlier analysis using co-expression. 
