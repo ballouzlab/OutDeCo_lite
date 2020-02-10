@@ -104,8 +104,7 @@ deg <- calc_DE(counts_data, groups, "wilcox")
 plot( deg$degs$log2_fc, -log10(deg$degs$pvals) , pch=19 )
 plot( log2(deg$degs$mean_cpm),  deg$degs$log2_fc,  pch=19 )
 ```
-<img src="./figures/DE_volcano_plot.png" height = 200/>
-<img src="./figures/DE_MA_plot.png" height = 200/>
+<img src="./figures/DE_volcano_plot.png" height = 200/> <img src="./figures/DE_MA_plot.png" height = 200/>
 
 
 #### b. Using other common methods 
