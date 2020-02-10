@@ -1,12 +1,8 @@
 # OutDeCo <img src="./figures/sticker2.png" align="right" height = 150/>
-*OutDeCo*: Outlier detection through co-expression. 
+*OutDeCo*: Outlier detection through co-expression. The purpose of this package is to assess genes - more specifically differentially expressed genes - with respect to their co-expression properties. 
 
 # Introduction 
 This manual provides an overview of the Bioconductor package *OutDeCo* for differential expression outlier analysis using co-expression. 
- 
-
-## Is this for you?
-The purpose of this package is to assess genes - more specifically differentially expressed genes - with respect to their co-expression properties. 
 
 ## What do we mean by "functional outliers"? 
 Genes do not act alone. They participate in pathways (genetic interactions) or form complexes (physical interactions), each of which defines their function. An approach to assess their functions is to look to differential expression, where we assay the transcriptome and search for differences between conditions. Since one way to think of gene function is to consider disease, i.e., where systems break down or respond unusually to a perturbation, differential expression is a typical approach. This is usually followed by a gene set enrichment analysis to discover the common theme or function in the set of genes. 
