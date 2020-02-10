@@ -63,7 +63,6 @@ browseVignettes("OutDeCo")
 
 Alternatively, use devtools for the development version. 
 ```{r , eval=FALSE}
-# Or the development version from GitHub:
 # install.packages("devtools")
 devtools::install_github("sarbal/OutDeCo")
 ```
@@ -85,18 +84,16 @@ set up as a matrix, with columns as your individual samples, and rows as genes.
 The row names should be labelled by their gene entrez IDs.
 The columns should be labelled by their sample IDs.
 The expression dataset should be placed in the variable: ``` counts ``` 
-```{r load_data}
 
+```{r load_data}
 data(counts_data)
 data(labels) 
-
-
 ```
 
 ### 2. Run a DE analysis 
 #### a. Using the wilcox.test
 ```{r eval=F}
-# Let's do a sex based DE 
+# Let's peform a sex differential expression analysis 
 groups <- as.numeric(labels$Sex) 
 # We ignore family 1, and remove the probands 
 groups[labels$Family==1] <- 0
@@ -107,6 +104,9 @@ deg <- calc_DE(counts_data, groups, "wilcox")
 plot( deg$degs$log2_fc, -log10(deg$degs$pvals) , pch=19 )
 plot( log2(deg$degs$mean_cpm),  deg$degs$log2_fc,  pch=19 )
 ```
+<img src="./figures/DE_volcano_plot.png" height = 200/>
+<img src="./figures/DE_MA_plot.png" height = 200/>
+
 
 #### b. Using other common methods 
 Alternatively, you can run either edgeR or DESeq2.   
