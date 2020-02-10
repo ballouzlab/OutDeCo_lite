@@ -1,4 +1,4 @@
-# OutDeCo <img src="./figures/sticker2.png" align="right" height = 150/>
+# OutDeCo <img src="./figures/sticker2.gif" align="right" height = 150/>
 *OutDeCo*: Outlier detection through co-expression. The purpose of this package is to assess genes - more specifically differentially expressed genes - with respect to their co-expression properties. 
 
 # Introduction 
