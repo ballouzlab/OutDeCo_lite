@@ -101,8 +101,8 @@ groups[labels$Relationship == "prb"] <- 0
 
 # We run a basic DE
 deg <- calc_DE(counts_data, groups, "wilcox")
-plot( deg$degs$log2_fc, -log10(deg$degs$pvals) , pch=19 )
-plot( log2(deg$degs$mean_cpm),  deg$degs$log2_fc,  pch=19 )
+plot( deg$degs$log2_fc, -log10(deg$degs$pvals) , pch=19, xlab="log2 FC", ylab="-log10 p-vals", bty="n" )
+plot( log2(deg$degs$mean_cpm),  deg$degs$log2_fc,  pch=19 , ylab="log2 FC", xlab="Average expression (log2 CPM + 1)", bty="n" )
 ```
 <img src="./figures/DE_volcano_plot.png" height = 200/> <img src="./figures/DE_MA_plot.png" height = 200/>
 
@@ -112,14 +112,21 @@ Alternatively, you can run either edgeR or DESeq2.
 ```{r eval=FALSE}
 
 deg <- calc_DE(counts_data, groups, "DESeq2")
-plot( deg$degs$log2_fc, -log10(deg$degs$pvals) , pch=19 )
-plot( log2(deg$degs$mean_cpm),  deg$degs$log2_fc,  pch=19 )
+plot( deg$degs$log2_fc, -log10(deg$degs$pvals) , pch=19, xlab="log2 FC", ylab="-log10 p-vals", bty="n" )
+plot( log2(deg$degs$mean_cpm),  deg$degs$log2_fc,  pch=19 , ylab="log2 FC", xlab="Average expression (log2 CPM + 1)", bty="n" )
+```
+<img src="./figures/DE_volcano_plot_deseq.png" height = 200/> <img src="./figures/DE_MA_plot_deseq.png" height = 200/>
 
+
+```{r{
 # Or 
 deg <- calc_DE(counts_data, groups, "edgeR")
-plot( deg$degs$log2_fc, -log10(deg$degs$pvals) , pch=19 )
-plot( log2(deg$degs$mean_cpm),  deg$degs$log2_fc,  pch=19 )
+plot( deg$degs$log2_fc, -log10(deg$degs$pvals) , pch=19, xlab="log2 FC", ylab="-log10 p-vals", bty="n" )
+plot( log2(deg$degs$mean_cpm),  deg$degs$log2_fc,  pch=19 , ylab="log2 FC", xlab="Average expression (log2 CPM + 1)", bty="n" )
 ```
+<img src="./figures/DE_volcano_plot_edger.png" height = 200/> <img src="./figures/DE_MA_plot_edger.png" height = 200/>
+
+
 Note, second variable in list is the regular output from either tool. 
 
 #### c. Other bespoke methods 
