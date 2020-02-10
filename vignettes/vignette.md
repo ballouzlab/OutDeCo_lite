@@ -24,7 +24,7 @@ vignette: >
 ---
 
 # OutDeCo: Outlier detection through co-expression
-![Sticker](./figures/sticker.png "")
+![Sticker](./figures/sticker2.png "")
 
 # Introduction 
 This manual provides an overview of the Bioconductor package *OutDeCo* for differential expression outlier analysis using co-expression. 
