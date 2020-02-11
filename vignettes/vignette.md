@@ -108,31 +108,24 @@ plot( log2(deg$degs$mean_cpm),  deg$degs$log2_fc,  pch=19 , ylab="log2 FC", xlab
 
 
 #### b. Using other common methods 
-Alternatively, you can run either edgeR or DESeq2.   
+Alternatively, you can rundefault versions of either DESeq2 or edgeR: 
 ```{r eval=FALSE}
-
 deg <- calc_DE(counts_data, groups, "DESeq2")
 plot( deg$degs$log2_fc, -log10(deg$degs$pvals) , pch=19, xlab="log2 FC", ylab="-log10 p-vals", bty="n" )
 plot( log2(deg$degs$mean_cpm),  deg$degs$log2_fc,  pch=19 , ylab="log2 FC", xlab="Average expression (log2 CPM + 1)", bty="n" )
 ```
 <img src="./figures/DE_volcano_plot_deseq.png" height = 200/> <img src="./figures/DE_MA_plot_deseq.png" height = 200/>
-
-
 ```{r{
-# Or 
 deg <- calc_DE(counts_data, groups, "edgeR")
 plot( deg$degs$log2_fc, -log10(deg$degs$pvals) , pch=19, xlab="log2 FC", ylab="-log10 p-vals", bty="n" )
 plot( log2(deg$degs$mean_cpm),  deg$degs$log2_fc,  pch=19 , ylab="log2 FC", xlab="Average expression (log2 CPM + 1)", bty="n" )
 ```
 <img src="./figures/DE_volcano_plot_edger.png" height = 200/> <img src="./figures/DE_MA_plot_edger.png" height = 200/>
 
-
-Note, second variable in list is the regular output from either tool. 
-
+Note, second variable in list is the regular output from either tool.
 #### c. Other bespoke methods 
-Or your own analysis, but making sure your DE results are formatted similarily.   
+Or your own analysis, but making sure your DE results are formatted similarily. We've provided a function to do this but it might be buggy! For more detail, see the function guidelines. 
 ```{r eval=FALSE}
-
 conditions <- groups
 samples <- colnames(cpm)
 col_data <- as.data.frame(cbind(samples, conditions))
@@ -142,96 +135,101 @@ dds <- DESeq2::DESeqDataSetFromMatrix(countData = counts,
                                          design = ~conditions)
 dds <- DESeq2::DESeq(dds)
 degs_input <- DESeq2::results(dds, contrast = c("conditions", "2", "0"))
-
 deg <- reformat_degs(degs_input, method) 
-
 ```
 
-
+## Using the package to assess a differentially expressed gene list
+### 1. Getting co-expression networks for DE genes from an expression dataset   
+```{r eval = FALSE}
+deg_output <- calc_DE(counts_data, groups, "wilcox")
+network_type <- 'generic'
+sub_nets <- subset_network_hdf5(deg_output$degs, network_type, dir=GLOBAL_DIR)
+```
 
 ## Using the package to assess a differentially expressed gene list
 
 ### 1. Getting co-expression networks for DE genes from an expression dataset   
 ```{r eval = FALSE}
-
-deg_output <- calc_DE(counts, groups, "wilcox")
+deg_output <- calc_DE(counts_data, groups, "wilcox")
 network_type <- 'generic'
 sub_nets <- subset_network_hdf5(deg_output$degs, network_type, dir=GLOBAL_DIR)
-
 ```
 
 ### 2. Cluster genes and assess modules 
 ```{r eval = FALSE}
-
+clust_net = list()  
 deg_sig <- sub_nets$deg_sig
 fc_sig  <- sub_nets$fc_sig
 sub_net <- sub_nets$sub_net
 node_degrees <-  sub_nets$node_degrees 
+medK <-  as.numeric(sub_nets$median)
 # Cluster and plot a heatmap of the co-expression sub-network    
-clust_net[["up"]]  <- cluster_coexp( sub_net$up, flag_plot = TRUE )
+clust_net[["up"]]  <- cluster_coexp( sub_net$up, medK = medK, flag_plot = TRUE )
 
 # Cluster and then plot
 clust_net[["down"]]  <- cluster_coexp( sub_net$down)
 plot_coexpression_heatmap( sub_net$down, clust_net$down)
 ```
+<img src="./figures/plot_coexpression_heatmap_up.png" height = 200/> <img src="./figures/plot_coexpression_heatmap_down.png" height = 200/>
 
 You can look at the node degrees to get a sense of the global/local connectivities of the genes. 
 ```{r eval = FALSE}
-plot_scatter_hist(node_degrees$up[,1]/node_degrees$n_genes_total, 
+plot_scatter(node_degrees$up[,1]/node_degrees$n_genes_total, 
                   node_degrees$up[,2]/node_degrees$n_genes_up, 
                   xlab="Global node degree", 
-                  ylab="Local node degree")  
-```
+                  ylab="Local node degree" )  
 
-Or by cluster (colored or subsetted) 
+plot_scatter(node_degrees$up[,1]/node_degrees$n_genes_total, 
+                  node_degrees$up[,2]/node_degrees$n_genes_up, 
+                  xlab="Global node degree", 
+                  ylab="Local node degree", flag= "density")   
+```
+<img src="./figures/plot_scatter_hist_up.png" height = 200/> <img src="./figures/plot_scatter_density_up.png" height = 200/> 
+
+Or by cluster (colored) 
 ```{r eval = FALSE}
-m <- match(sub_net_down_prop$clusters[,1] , rownames(sub_net$down))
-plot_scatter_hist(node_degrees$down[m,1]/node_degrees$n_genes_total, 
+m <- match(clust_net$down$clusters$genes , rownames(sub_net$down))
+plot_scatter(node_degrees$down[m,1]/node_degrees$n_genes_total, 
                   node_degrees$down[m,2]/node_degrees$n_genes_down, 
                   xlab="Global node degree", 
                   ylab="Local node degree", 
-                  col_map=sub_net_down_prop$clusters[,4] )  
-
- 
-
-m <- which(sub_net_down_prop$clusters[,2] == 1 )
-plot_scatter_hist(node_degrees$down[m,1]/node_degrees$n_genes_total, 
-                  node_degrees$down[m,2]/node_degrees$n_genes_down, 
-                  xlab="Global node degree", 
-                  ylab="Local node degree")  
-
-
-m <- match(sub_net_up_prop$clusters[,1] , rownames(sub_net$up))
-plot_scatter_density( node_degrees$up[m,1],  node_degrees$up[m,2], sub_net_up_prop$clusters,
-                                        col_map=sub_net_up_prop$clusters[,4] )   
-
-
-
+                  clusters = clust_net$down$clusters )  
 ```
+<img src="./figures/plot_scatter_hist_down_colored.png" height = 200/> 
+
 
 Alternatively, we can assess the genes using their average connectivity properties in the network.
 For this, we run a neighbor-voting algorithm (in the EGAD? package). 
-```{r eval=FALSE }
-loocv <- list() 
-loocv[["up"]]   <- neighbor_voting_loocv(gene_sets$up , network)
-loocv[["down"]] <- neighbor_voting_loocv(gene_sets$down , network)
+```{r}
+gene_sets <- matrix(0, nrow= dim(deg_sub)[1], ncol = 2 )
+colnames(gene_sets) <- c("up", "down") 
+rownames(gene_sets) <- rownames(deg_sub) 
+gene_sets[deg_sig$up,1] <- 1 
+gene_sets[deg_sig$down,2] <- 1 
 
-m <- match(sub_net_down_prop$clusters[,1] ,  rownames(loocv$down) )
-plot_scatter_hist(loocv$down[m,1], 
+network <- rhdf5::h5read("~/workspace/data/agg_coexp/generic.occr.net.h5", "net" )
+genes <- rhdf5::h5read("~/workspace/data/agg_coexp/generic.genes.h5", "genes" )
+colnames(network) = genes[,1]
+rownames(network) = genes[,1]
+
+loocv <- list() 
+loocv[["up"]]   <- neighbor_voting_loocv( gene_sets[,1], network)
+loocv[["down"]] <- neighbor_voting_loocv( gene_sets[,2], network)
+
+m <- match(clust_net$down$clusters[,1] ,  rownames(loocv$down) )
+plot_scatter(loocv$down[m,1], 
                   loocv$down[m,3], 
                   xlab="AUROC - LOOCV", 
                   ylab="Local node degree")  
 
-m <- match(sub_net_up_prop$clusters[,1] ,  rownames(loocv$up) )
-plot_scatter_hist(loocv$up[m,1], 
-                  loocv$up[m,2], 
-                  sub_net_up_prop$clusters,
+m <- match(clust_net$up$clusters[,1] ,  rownames(loocv$up) )
+plot_scatter(loocv$up[m,1], loocv$up[m,2], 
+                  clusters = clust_net$up$clusters,
                   xlab="AUROC - LOOCV", 
-                  ylab="Global node degree", 
-                  col_map=TRUE)  
-
-
+                  ylab="Global node degree")  
 ```
+<img src="./figures/plot_scatter_hist_loocv_down.png" height = 200/> <img src="./figures/plot_scatter_hist_loocv_colored.png" height = 200/> 
+
 
 
 Finally, we can assess the functional outliers within the results. These are the genes that are DE but do not show local co-expression. 
@@ -243,9 +241,6 @@ genes_keep <- !is.na(match( clust_net$down$clusters$labels, clust_keep))
 plot_coexpression_heatmap(  sub_net$genes, clust_net$down, filt=TRUE)
 plot_network( sub_net$genes, clust_net$down , 1 - as.numeric(sub_net$median ))
 ```
-
-
-
 
 
 ## Using the package to run a recurrence analysis
@@ -276,18 +271,14 @@ subgenesets <- (genes.down[fg,])*1
 
 To find gene-level recurrence, we simply sum the rows, and permute to calculate the signficance (or use a bionomial test).  
 ```{r}
-
 n_studies <- dim(subgenesets)[2]
 fdrs <- calc_fdrs_recur( subgenesets )
 fdrs_bin <- calc_binom_recur(subgenesets)
 recur <- rowSums(subgenesets, na.rm=T)
 
 plot_recurrence( subgenesets, fdrs, n_studies, flag_plot = "hist") 
-
 plot_recurrence( subgenesets, fdrs, n_studies, flag_plot = "heat")
-
 plot_recurrence( subgenesets, fdrs, n_studies, flag_plot = "venn")
-
 ```
 
 
