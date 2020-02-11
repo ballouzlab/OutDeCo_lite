@@ -354,7 +354,6 @@ Here, we find a few GO terms that are recurrent across the studies, all related 
 
 ### 4. Assessing recurrent genes 
 We can then look at the enrichment of the recurrent genes. Genes that recur 4 or more times are significant. 
-
 ```{r eval=FALSE}
 n_max_recur <-  max(recur)
 go.enrich.recur <- lapply(1:n_max_recur, function(i) 
@@ -379,9 +378,10 @@ Genes that recur 4 or more times (~ genes) are enriched for vesicle-mediated ter
 ```{r}
 path_lists <- list( names(which((pathsrec[,4]) > 0 )), 
                     names(which( rowSums(paths) >= fdrs_paths$Pt ))) 
-venn::venn( path_lists,
+venn::venn (path_lists,
          zcolor= viridis(3), col=NA,
-         snames=c("Recurrently \n enriched\n pathways", "Pathways enriched \n from recurrent genes"), box = FALSE,
+         snames=c("Recurrently \n enriched\n pathways", "Pathways enriched \n from recurrent genes"), 
+         box = FALSE,
          ilcs = 1, sncs = 1.5)
 
 path_overlap <-  intersect(path_lists[[1]], path_lists[[2]])  
@@ -407,7 +407,7 @@ This shows genes that are recurrent but not commonly co-expressed in the network
 
 <img src="./figures/venn_overlap_recur.png" height = 300/>
 
-
+We can repeat this analysis on other networks (here brain and blood aggregates). 
 ```{r}
 network_type <- "brain"
 load(file="../out_test/brain_down_median_asdist.Rdata" ) 
@@ -428,6 +428,9 @@ plot_2D_hist(pre_post_mat,
               col=recur_cols, 
               xlab="Gene recurrence", ylab="Outlier gene recurrence")
 ```
+The outlier analysis shifts, with our set of genes showing co-expression in the brain and being filtered away. However, most genes remain recurrent (as outliers) in the blood. 
+<img src="./figures/plot_2D_hist_pd_brain.png" height = 300/> <img src="./figures/plot_2D_hist_pd_blood.png" height = 300/>
+
 
 #### b. Filtering on the recurrent set 
 ```{r}
@@ -451,30 +454,21 @@ plot_network( sub_nets$sub_net$genes, clust_net , 1 - as.numeric(sub_nets$median
 ### 1. Assessing a gene list and their co-expresssion 
 ```{r}
 # Change to data example 
-load("../out_test/junk/ASD/asd_gene_sets.Rdata")
-load("../out_test/junk/ASD/asd_example_data.Rdata")
+load("out_test/junk/ASD/asd_gene_sets.Rdata")
+load("out_test/junk/ASD/asd_example_data.Rdata")
 # 
-
-
 filt_min <- 6 # Adjust/change  
 gene_list <- rownames(asd.genes.tally)[asd.genes.tally[,17]==1]   
 gene_list_entrez <- EGAD::attr.human$entrezID[match(gene_list, EGAD::attr.human$name) ] 
-
 network_type = "generic"
-
 # This takes some time, so pre-loading it instead 
 # sub_nets <- subset_network_hdf5_gene_list(gene_list_entrez , "generic", dir=GLOBAL_DIR)
-
-
 clust_net <- cluster_coexp(  sub_nets$sub_net$genes, medK = as.numeric(sub_nets$median ) )
 clust_size <- plyr::count(clust_net$clusters$labels )
-
 clust_keep <-  clust_size[clust_size[,2] < filt_min ,1]
 genes_keep <- !is.na(match( clust_net$clusters$labels, clust_keep))
-
 plot_coexpression_heatmap(  sub_nets$sub_net$genes, clust_net, filt=TRUE)
 plot_network( sub_nets$sub_net$genes, clust_net , 1 - as.numeric(sub_nets$median ))
-
 ```
 
 
@@ -485,31 +479,19 @@ plot_network( sub_nets$sub_net$genes, clust_net , 1 - as.numeric(sub_nets$median
 load("../out_test/junk/ASD/asd_gene_sets.Rdata")
 load("../out_test/junk/ASD/asd_example_data.Rdata")
 # 
-
-
 filt_min <- 6 # Adjust/change  
 gene_list <- rownames(asd.genes.tally)[asd.genes.tally[,17]==1]   
 gene_list_entrez <- EGAD::attr.human$entrezID[match(gene_list, EGAD::attr.human$name) ] 
-
 network_type = "generic"
-
 # This takes some time, so pre-loading it instead 
 # sub_nets <- subset_network_hdf5_gene_list(gene_list_entrez , "generic", dir=GLOBAL_DIR)
-
-
 clust_net <- cluster_coexp(  sub_nets$sub_net$genes, medK = as.numeric(sub_nets$median ) )
 clust_size <- plyr::count(clust_net$clusters$labels )
-
 clust_keep <-  clust_size[clust_size[,2] < filt_min ,1]
 genes_keep <- !is.na(match( clust_net$clusters$labels, clust_keep))
-
 plot_coexpression_heatmap(  sub_nets$sub_net$genes, clust_net, filt=TRUE)
 plot_network( sub_nets$sub_net$genes, clust_net , 1 - as.numeric(sub_nets$median ))
-
 ```
-
-
-
 
 # Acknowledgements
 
