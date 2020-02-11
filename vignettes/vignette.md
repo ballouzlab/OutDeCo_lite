@@ -230,18 +230,17 @@ plot_scatter(loocv$up[m,1], loocv$up[m,2],
 ```
 <img src="./figures/plot_scatter_hist_loocv_down.png" height = 200/> <img src="./figures/plot_scatter_hist_loocv_colored.png" height = 200/> 
 
-
-
 Finally, we can assess the functional outliers within the results. These are the genes that are DE but do not show local co-expression. 
 ```{r eval=FALSE }
+filt_min <-6 
 clust_size <- plyr::count(clust_net$down$clusters$labels )
 clust_keep <-  clust_size[clust_size[,2] < filt_min ,1]
 genes_keep <- !is.na(match( clust_net$down$clusters$labels, clust_keep))
 
-plot_coexpression_heatmap(  sub_net$genes, clust_net$down, filt=TRUE)
-plot_network( sub_net$genes, clust_net$down , 1 - as.numeric(sub_net$median ))
+plot_coexpression_heatmap(  sub_net$down, clust_net$down, filt=TRUE)
+plot_network(    sub_net$down, clust_net$down , 1 - medK)
 ```
-
+<img src="./figures/plot_coexpression_heatmap_down_filt.png" height = 200/> <img src="./figures/plot_network_down.png" height = 200/> 
 
 ## Using the package to run a recurrence analysis
 We can run the co-expression analyss in a meta-analytic framework. Here, we take multiple DE lists and use their recurrent DE properties. This method allows us to assess the prior probabilities of DEGs along with their co-expression properties. 
