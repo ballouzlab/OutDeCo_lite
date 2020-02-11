@@ -291,11 +291,12 @@ plot_recurrence( subgenesets, fdrs, n_studies, flag_plot = "venn")
 ```
 <img src="./figures/plot_recurrence_hist_pd.png" height = 300/> <img src="./figures/plot_recurrence_heat_pd.png" height = 300/>  <img src="./figures/plot_recurrence_venn_pd.png" height = 300/> 
 
+Note, a maximum of 7 studies can be used in a venn diagram, so if the number of studies exceeds this, a random sample of studies are shown. 
+
 ### 3. Assessing enrichment 
 Next, we look for pathway enrichment, and pathway-level recurrence. 
 ```{r eval=FALSE}
-
-n = dim(subgenesets)[2]
+n_studies <- dim(subgenesets)[2]
 annotations = make_annotations(GO.human[,c(1,3)], (unique(GO.human[,1])), go.slim[ff,1])
 go.enrich = lapply(1:n, function(i) gene_set_enrichment( names(which(subgenesets[,i]==1)), annotations, go.slim[ff,1:2]))
 paths = sapply(1:n, function(i) (go.enrich[[i]]$padj<0.05)*1 )
