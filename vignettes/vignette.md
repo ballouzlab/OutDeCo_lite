@@ -228,7 +228,7 @@ plot_scatter(loocv$up[m,1], loocv$up[m,2],
                   xlab="AUROC - LOOCV", 
                   ylab="Global node degree")  
 ```
-<img src="./figures/plot_scatter_hist_loocv_down.png" height = 200/> <img src="./figures/plot_scatter_hist_loocv_colored.png" height = 200/> 
+<img src="./figures/plot_scatter_hist_loocv_down.png" height = 200/> <img src="./figures/plot_scatter_hist_loocv_up_colored.png" height = 200/> 
 
 Finally, we can assess the functional outliers within the results. These are the genes that are DE but do not show local co-expression. 
 ```{r eval=FALSE }
