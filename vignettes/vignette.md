@@ -428,7 +428,9 @@ plot_2D_hist(pre_post_mat,
               col=recur_cols, 
               xlab="Gene recurrence", ylab="Outlier gene recurrence")
 ```
+
 The outlier analysis shifts, with our set of genes showing co-expression in the brain and being filtered away. However, most genes remain recurrent (as outliers) in the blood. 
+
 <img src="./figures/plot_2D_hist_pd_brain.png" height = 300/> <img src="./figures/plot_2D_hist_pd_blood.png" height = 300/>
 
 
@@ -447,8 +449,6 @@ genes_keep <- !is.na(match( clust_net$clusters$labels, clust_keep))
 plot_coexpression_heatmap(  clust_net$distance_matrix, clust_net, filt=TRUE)
 plot_network( sub_nets$sub_net$genes, clust_net , 1 - as.numeric(sub_nets$median ))
 ```
-
-
 
 ## Using the package to assess gene lists or with other networks
 ### 1. Assessing a gene list and their co-expresssion 
