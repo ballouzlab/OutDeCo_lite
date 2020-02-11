@@ -402,7 +402,13 @@ plot_2D_hist(pre_post_mat,
               xlab="Gene recurrence", ylab="Outlier gene recurrence")
 ```
 <img src="./figures/plot_2D_hist_pd.png" height = 300/>
-```
+
+This shows genes that are recurrent but not commonly co-expressed in the network (top quadrant). 
+
+<img src="./figures/venn_overlap_recur.png" height = 300/>
+
+
+```{r}
 network_type <- "brain"
 load(file="../out_test/brain_down_median_asdist.Rdata" ) 
 
