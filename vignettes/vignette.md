@@ -323,36 +323,50 @@ heatmap.2( -log10(t(paths.padj[f,])), Colv=F, Rowv=F,
            key.title="Enrichment", trace="none", density="none" )
 ```
 <img src="./figures/heatmap_pd_enrichment.png" height = 300/> 
-```
+
+We can run a pathway recurrence analysis too. 
+```{r}
 fdrs_paths  <- calc_fdrs_recur( paths )
 plot_recurrence( paths, fdrs_paths, n_studies, flag_plot = "hist") 
 plot_recurrence( paths, fdrs_paths, n_studies, flag_plot = "heat") 
 ```
 <img src="./figures/plot_recurrence_pd_paths.png" height = 300/> <img src="./figures/plot_recurrence_heat_pd_paths.png" height = 300/>
+Here, we find a few GO terms that are recurrent across the studies, all related to vesicle-mediated transport, very broad (and large) groups. 
 
 
 ### 4. Assessing recurrent genes 
-We can then look at the enrichment of the recurrent genes. 
+We can then look at the enrichment of the recurrent genes. Genes that recur 4 or more times are significant. 
 ```{r eval=FALSE}
 n_max_recur <-  max(recur)
 go.enrich.recur <- lapply(1:n_max_recur, function(i) gene_set_enrichment( names(recur[recur>(i-1)]), annotations, go.slim[ff,1:2]))
-
-
 pathsrec      <- sapply(1:n_max_recur, function(i) (go.enrich.recur[[i]]$padj<0.05)*1 )
 pathsrec.padj <- sapply(1:n_max_recur, function(i) go.enrich.recur[[i]]$padj )
-
 rownames(pathsrec)      <- go.enrich.recur[[1]][,1]
 rownames(pathsrec.padj) <- go.enrich.recur[[1]][,1]
-
-heatmap.3( -log10(pathsrec.padj), Colv=F, Rowv=F, col=cols9, cexRow = 0.7, notecol="black", notecex=2 )
-
+heatmap.2( -log10(t(pathsrec.padj[f,])), Colv=F, Rowv=F, 
+           col=cols9, cexRow = 0.7,   
+           notecol="black", 
+           notecex=2, 
+           keysize=1, 
+           key.xlab="-log10 adjusted P-value", 
+           key.title="Enrichment", trace="none", density="none" )
 ```
+<img src="./figures/heatmap_recurrent_enrich.png" height = 300/>
+Genes that recur 4 or more times (~ genes) are enriched for vesicle-mediated terms. These overlap with the recurrently enriched pathways. 
+```{r}
+path_lists <- list( names(which((pathsrec[,4]) > 0 )), names(which( rowSums(paths) >= fdrs_paths$Pt ))) 
+venn::venn( path_lists,
+         zcolor= viridis(3), col=NA,
+         snames=c("Recurrently \n enriched\n pathways", "Pathways enriched \n from recurrent genes"), box = FALSE,
+         ilcs = 1, sncs = 1.5)
 
+path_overlap <-  intersect(path_lists[[1]], path_lists[[2]])  
+```
+<img src="./figures/venn_path_overlap.png" height = 300/>
 
 ### 5. Assessing recurrent genes and their co-expresssion 
 #### a. Filtering by individual study
 ```{r}
-
 network_type <- "generic"
 load(file="../out_test/down_median_asdist.Rdata" ) 
  
@@ -367,17 +381,11 @@ load(file="../out_test/brain_down_median_asdist.Rdata" )
 pre_post_mat <- get_recur_mat( cbind(res.brain$Recurrence_filtered, res.brain$Recurrence)  )
 plot_2D_hist(pre_post_mat, res.brain$FDRs$Pt, res.brain$FDRs_filtered$Pt, col=recur_cols, xlab="Gene recurrence", ylab="Outlier gene recurrence")
 
-
-
 network_type <- "blood"
 load(file="..//out_test/blood_down_median_asdist.Rdata" ) 
-
 #res.blood <- run_filtering( subgenesets, "down", network_type, outputflag = FALSE )
 pre_post_mat <- get_recur_mat( cbind(res.blood$Recurrence_filtered, res.blood$Recurrence)  )
 plot_2D_hist(pre_post_mat, res.blood$FDRs$Pt, res.blood$FDRs_filtered$Pt, col=recur_cols, xlab="Gene recurrence", ylab="Outlier gene recurrence")
-
-
-
 ```
 
 
