@@ -289,8 +289,7 @@ plot_recurrence( subgenesets, fdrs, n_studies, flag_plot = "hist")
 plot_recurrence( subgenesets, fdrs, n_studies, flag_plot = "heat")
 plot_recurrence( subgenesets, fdrs, n_studies, flag_plot = "venn")
 ```
-<img src="./figures/barplot_pd_downregulated_genes.png" height = 300/> 
-
+<img src="./figures/plot_recurrence_hist_pd.png" height = 300/> <img src="./figures/plot_recurrence_heat_pd.png" height = 300/>  <img src="./figures/plot_recurrence_venn_pd.png" height = 300/> 
 
 ### 3. Assessing enrichment 
 Next, we look for pathway enrichment, and pathway-level recurrence. 
