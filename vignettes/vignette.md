@@ -247,6 +247,7 @@ Which genes were filtered away? It looks like genes on the Y chromosome, which m
 EGAD::attr.human[match( clust_net$down$clusters$genes[!genes_keep] , EGAD::attr.human$entrezID )  ,] 
 ```
 <img src="./figures/genes_filtered.png" height = 300/> 
+
 And genes that remain? A variety of genes that could potentially be of interest.  
 ```{r}
 EGAD::attr.human[match( clust_net$down$clusters$genes[genes_keep] , EGAD::attr.human$entrezID )  ,] 
@@ -260,11 +261,9 @@ We can run the co-expression analyss in a meta-analytic framework. Here, we take
 One option is to use other databases to perform a meta-analysis. You will need either multiple expression experiments or multiple differentially expressed gene (DEGs) lists. 
 As studies are variable and samples may overlap, this is best done in a curated manner.
 We have three example disease sets for your persual. Here we show a meta-analysis of Parkinson's disease.  
-First load the data. In this example, we will load the sets of DEGs. 
+First load the data. In this example, we will load the sets of DEGs. For more info on how to do this, see the **notes**. 
 ```{r}
-
 load("../out_test/junk/pd.DE.Rdata")
-
 ```
 This file has two large matrices, genes by study, one with downregulated genes, and one with the upregulated genes. We analyze them independently. 
 
@@ -272,24 +271,25 @@ This file has two large matrices, genes by study, one with downregulated genes, 
 ### 2. Calculating recurrence 
 These are the X studies and the number of genes that were significantly upregulated in each.
 ```{r}
-
-hist(colSums(genes.down) ) 
+n_studies <- dim(genes.down)[2]
+studies <- colnames(genes.down)
+bp <- barplot(colSums(genes.down) , horiz = T, xlab = "Number of downregulated DEGs", 
+              names=F, col=inferno(n_studies), border=NA, space = 0)
+text(1000, bp, studies)
 subgenesets <- (genes.down[fg,])*1
-
 ```
-
+<img src="./figures/barplot_pd_downregulated_genes.png" height = 300/> 
+ 
 To find gene-level recurrence, we simply sum the rows, and permute to calculate the signficance (or use a bionomial test).  
 ```{r}
-n_studies <- dim(subgenesets)[2]
 fdrs <- calc_fdrs_recur( subgenesets )
 fdrs_bin <- calc_binom_recur(subgenesets)
 recur <- rowSums(subgenesets, na.rm=T)
-
 plot_recurrence( subgenesets, fdrs, n_studies, flag_plot = "hist") 
 plot_recurrence( subgenesets, fdrs, n_studies, flag_plot = "heat")
 plot_recurrence( subgenesets, fdrs, n_studies, flag_plot = "venn")
 ```
-
+<img src="./figures/barplot_pd_downregulated_genes.png" height = 300/> 
 
 
 ### 3. Assessing enrichment 
