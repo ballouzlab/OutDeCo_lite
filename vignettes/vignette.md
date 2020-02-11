@@ -104,7 +104,7 @@ deg <- calc_DE(counts_data, groups, "wilcox")
 plot( deg$degs$log2_fc, -log10(deg$degs$pvals) , pch=19, xlab="log2 FC", ylab="-log10 p-vals", bty="n" )
 plot( log2(deg$degs$mean_cpm),  deg$degs$log2_fc,  pch=19 , ylab="log2 FC", xlab="Average expression (log2 CPM + 1)", bty="n" )
 ```
-<img src="./figures/DE_volcano_plot.png" height = 200/> <img src="./figures/DE_MA_plot.png" height = 200/>
+<img src="./figures/DE_volcano_plot.png" height = 300/> <img src="./figures/DE_MA_plot.png" height = 300/>
 
 
 #### b. Using other common methods 
@@ -114,13 +114,13 @@ deg <- calc_DE(counts_data, groups, "DESeq2")
 plot( deg$degs$log2_fc, -log10(deg$degs$pvals) , pch=19, xlab="log2 FC", ylab="-log10 p-vals", bty="n" )
 plot( log2(deg$degs$mean_cpm),  deg$degs$log2_fc,  pch=19 , ylab="log2 FC", xlab="Average expression (log2 CPM + 1)", bty="n" )
 ```
-<img src="./figures/DE_volcano_plot_deseq.png" height = 200/> <img src="./figures/DE_MA_plot_deseq.png" height = 200/>
+<img src="./figures/DE_volcano_plot_deseq.png" height = 300/> <img src="./figures/DE_MA_plot_deseq.png" height = 300/>
 ```{r{
 deg <- calc_DE(counts_data, groups, "edgeR")
 plot( deg$degs$log2_fc, -log10(deg$degs$pvals) , pch=19, xlab="log2 FC", ylab="-log10 p-vals", bty="n" )
 plot( log2(deg$degs$mean_cpm),  deg$degs$log2_fc,  pch=19 , ylab="log2 FC", xlab="Average expression (log2 CPM + 1)", bty="n" )
 ```
-<img src="./figures/DE_volcano_plot_edger.png" height = 200/> <img src="./figures/DE_MA_plot_edger.png" height = 200/>
+<img src="./figures/DE_volcano_plot_edger.png" height = 300/> <img src="./figures/DE_MA_plot_edger.png" height = 300/>
 
 Note, second variable in list is the regular output from either tool.
 #### c. Other bespoke methods 
@@ -170,7 +170,7 @@ clust_net[["up"]]  <- cluster_coexp( sub_net$up, medK = medK, flag_plot = TRUE )
 clust_net[["down"]]  <- cluster_coexp( sub_net$down)
 plot_coexpression_heatmap( sub_net$down, clust_net$down)
 ```
-<img src="./figures/plot_coexpression_heatmap_up.png" height = 200/> <img src="./figures/plot_coexpression_heatmap_down.png" height = 200/>
+<img src="./figures/plot_coexpression_heatmap_up.png" height = 300/> <img src="./figures/plot_coexpression_heatmap_down.png" height = 300/>
 
 You can look at the node degrees to get a sense of the global/local connectivities of the genes. 
 ```{r eval = FALSE}
@@ -184,7 +184,7 @@ plot_scatter(node_degrees$up[,1]/node_degrees$n_genes_total,
                   xlab="Global node degree", 
                   ylab="Local node degree", flag= "density")   
 ```
-<img src="./figures/plot_scatter_hist_up.png" height = 200/> <img src="./figures/plot_scatter_density_up.png" height = 200/> 
+<img src="./figures/plot_scatter_hist_up.png" height = 300/> <img src="./figures/plot_scatter_density_up.png" height = 300/> 
 
 Or by cluster (colored) 
 ```{r eval = FALSE}
@@ -195,7 +195,7 @@ plot_scatter(node_degrees$down[m,1]/node_degrees$n_genes_total,
                   ylab="Local node degree", 
                   clusters = clust_net$down$clusters )  
 ```
-<img src="./figures/plot_scatter_hist_down_colored.png" height = 200/> 
+<img src="./figures/plot_scatter_hist_down_colored.png" height = 300/> 
 
 
 Alternatively, we can assess the genes using their average connectivity properties in the network.
@@ -228,7 +228,7 @@ plot_scatter(loocv$up[m,1], loocv$up[m,2],
                   xlab="AUROC - LOOCV", 
                   ylab="Global node degree")  
 ```
-<img src="./figures/plot_scatter_hist_loocv_down.png" height = 200/> <img src="./figures/plot_scatter_hist_loocv_up_colored.png" height = 200/> 
+<img src="./figures/plot_scatter_hist_loocv_down.png" height = 300/> <img src="./figures/plot_scatter_hist_loocv_up_colored.png" height = 300/> 
 
 Finally, we can assess the functional outliers within the results. These are the genes that are DE but do not show local co-expression. 
 ```{r eval=FALSE }
@@ -240,7 +240,7 @@ genes_keep <- !is.na(match( clust_net$down$clusters$labels, clust_keep))
 plot_coexpression_heatmap(  sub_net$down, clust_net$down, filt=TRUE)
 plot_network(    sub_net$down, clust_net$down , 1 - medK)
 ```
-<img src="./figures/plot_coexpression_heatmap_down_filt.png" height = 200/> <img src="./figures/plot_network_down.png" height = 200/> 
+<img src="./figures/plot_coexpression_heatmap_down_filt.png" height = 300/> <img src="./figures/plot_network_down.png" height = 300/> 
 
 ## Using the package to run a recurrence analysis
 We can run the co-expression analyss in a meta-analytic framework. Here, we take multiple DE lists and use their recurrent DE properties. This method allows us to assess the prior probabilities of DEGs along with their co-expression properties. 
