@@ -238,13 +238,23 @@ clust_keep <-  clust_size[clust_size[,2] < filt_min ,1]
 genes_keep <- !is.na(match( clust_net$down$clusters$labels, clust_keep))
 
 plot_coexpression_heatmap(  sub_net$down, clust_net$down, filt=TRUE)
-plot_network(    sub_net$down, clust_net$down , 1 - medK)
+plot_network(sub_net$down, clust_net$down , 1 - medK)
 ```
 <img src="./figures/plot_coexpression_heatmap_down_filtered.png" height = 300/> <img src="./figures/plot_network_down.png" height = 300/> 
 
+Which genes were filtered away? It looks like genes on the Y chromosome, which makes sense in this context.  
+```{r}
+EGAD::attr.human[match( clust_net$down$clusters$genes[!genes_keep] , EGAD::attr.human$entrezID )  ,] 
+```
+<img src="./figures/genes_filtered.png" height = 300/> 
+And genes that remain? A variety of genes that could potentially be of interest.  
+```{r}
+EGAD::attr.human[match( clust_net$down$clusters$genes[genes_keep] , EGAD::attr.human$entrezID )  ,] 
+```
+<img src="./figures/genes_remaining.png" height = 300/> 
+
 ## Using the package to run a recurrence analysis
 We can run the co-expression analyss in a meta-analytic framework. Here, we take multiple DE lists and use their recurrent DE properties. This method allows us to assess the prior probabilities of DEGs along with their co-expression properties. 
-
 
 ### 1. Collecting DE sets    
 One option is to use other databases to perform a meta-analysis. You will need either multiple expression experiments or multiple differentially expressed gene (DEGs) lists. 
