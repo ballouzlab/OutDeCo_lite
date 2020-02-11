@@ -101,8 +101,12 @@ groups[labels$Relationship == "prb"] <- 0
 
 # We run a basic DE
 deg <- calc_DE(counts_data, groups, "wilcox")
-plot( deg$degs$log2_fc, -log10(deg$degs$pvals) , pch=19, xlab="log2 FC", ylab="-log10 p-vals", bty="n" )
-plot( log2(deg$degs$mean_cpm),  deg$degs$log2_fc,  pch=19 , ylab="log2 FC", xlab="Average expression (log2 CPM + 1)", bty="n" )
+plot( deg$degs$log2_fc, -log10(deg$degs$pvals), 
+      pch=19, bty="n", 
+      xlab="log2 FC", ylab="-log10 p-vals" )
+plot( log2(deg$degs$mean_cpm),  deg$degs$log2_fc,  
+      pch=19, bty="n", 
+      ylab="log2 FC", xlab="Average expression (log2 CPM + 1)")
 ```
 <img src="./figures/DE_volcano_plot.png" height = 300/> <img src="./figures/DE_MA_plot.png" height = 300/>
 
@@ -111,14 +115,22 @@ plot( log2(deg$degs$mean_cpm),  deg$degs$log2_fc,  pch=19 , ylab="log2 FC", xlab
 Alternatively, you can rundefault versions of either DESeq2 or edgeR: 
 ```{r eval=FALSE}
 deg <- calc_DE(counts_data, groups, "DESeq2")
-plot( deg$degs$log2_fc, -log10(deg$degs$pvals) , pch=19, xlab="log2 FC", ylab="-log10 p-vals", bty="n" )
-plot( log2(deg$degs$mean_cpm),  deg$degs$log2_fc,  pch=19 , ylab="log2 FC", xlab="Average expression (log2 CPM + 1)", bty="n" )
+plot( deg$degs$log2_fc, -log10(deg$degs$pvals), 
+      pch=19, bty="n", 
+      xlab="log2 FC", ylab="-log10 p-vals" )
+plot( log2(deg$degs$mean_cpm),  deg$degs$log2_fc,  
+      pch=19,  bty="n", 
+      xlab="Average expression (log2 CPM + 1)", ylab="log2 FC" )
 ```
 <img src="./figures/DE_volcano_plot_deseq.png" height = 300/> <img src="./figures/DE_MA_plot_deseq.png" height = 300/>
 ```{r{
 deg <- calc_DE(counts_data, groups, "edgeR")
-plot( deg$degs$log2_fc, -log10(deg$degs$pvals) , pch=19, xlab="log2 FC", ylab="-log10 p-vals", bty="n" )
-plot( log2(deg$degs$mean_cpm),  deg$degs$log2_fc,  pch=19 , ylab="log2 FC", xlab="Average expression (log2 CPM + 1)", bty="n" )
+plot( deg$degs$log2_fc, -log10(deg$degs$pvals),  
+      pch=19, bty="n", 
+      xlab="log2 FC", ylab="-log10 p-vals" )
+plot( log2(deg$degs$mean_cpm),  deg$degs$log2_fc,  
+      pch=19 , bty="n",   
+      xlab="Average expression (log2 CPM + 1)", ylab="log2 FC") 
 ```
 <img src="./figures/DE_volcano_plot_edger.png" height = 300/> <img src="./figures/DE_MA_plot_edger.png" height = 300/>
 
@@ -273,8 +285,9 @@ These are the X studies and the number of genes that were significantly upregula
 ```{r}
 n_studies <- dim(genes.down)[2]
 studies <- colnames(genes.down)
-bp <- barplot(colSums(genes.down) , horiz = T, xlab = "Number of downregulated DEGs", 
-              names=F, col=inferno(n_studies), border=NA, space = 0)
+bp <- barplot(colSums(genes.down) , horiz = TRUE, 
+              xlab = "Number of downregulated DEGs", 
+              names = FALSE, col=inferno(n_studies), border=NA, space = 0)
 text(1000, bp, studies)
 subgenesets <- (genes.down[fg,])*1
 ```
@@ -299,7 +312,10 @@ Next, we look for pathway enrichment, and pathway-level recurrence.
 n_studies <- dim(subgenesets)[2]
 studies <- colnames(subgenesets)
 annotations <- EGAD::make_annotations(GO.human[,c(1,3)], (unique(GO.human[,1])), go.slim[ff,1])
-go.enrich <-  lapply(1:n_studies, function(i) gene_set_enrichment( names(which(subgenesets[,i]==1)), annotations, go.slim[ff,1:2]))
+go.enrich <-  lapply(1:n_studies, function(i) 
+                     gene_set_enrichment( names(which(subgenesets[,i]==1)), 
+                                          annotations, 
+                                          go.slim[ff,1:2]))
 paths <-  sapply(1:n_studies, function(i) (go.enrich[[i]]$padj<0.05)*1 )
 paths.padj <-  sapply(1:n_studies, function(i) (go.enrich[[i]]$padj) )
 rownames(paths) <-  go.enrich[[1]][,1]
@@ -341,7 +357,10 @@ We can then look at the enrichment of the recurrent genes. Genes that recur 4 or
 
 ```{r eval=FALSE}
 n_max_recur <-  max(recur)
-go.enrich.recur <- lapply(1:n_max_recur, function(i) gene_set_enrichment( names(recur[recur>(i-1)]), annotations, go.slim[ff,1:2]))
+go.enrich.recur <- lapply(1:n_max_recur, function(i) 
+                          gene_set_enrichment( names(recur[recur>(i-1)]), 
+                                               annotations, 
+                                               go.slim[ff,1:2]))
 pathsrec      <- sapply(1:n_max_recur, function(i) (go.enrich.recur[[i]]$padj<0.05)*1 )
 pathsrec.padj <- sapply(1:n_max_recur, function(i) go.enrich.recur[[i]]$padj )
 rownames(pathsrec)      <- go.enrich.recur[[1]][,1]
@@ -358,7 +377,8 @@ heatmap.2( -log10(t(pathsrec.padj[f,])), Colv=F, Rowv=F,
 Genes that recur 4 or more times (~ genes) are enriched for vesicle-mediated terms. These overlap with the recurrently enriched pathways. 
 
 ```{r}
-path_lists <- list( names(which((pathsrec[,4]) > 0 )), names(which( rowSums(paths) >= fdrs_paths$Pt ))) 
+path_lists <- list( names(which((pathsrec[,4]) > 0 )), 
+                    names(which( rowSums(paths) >= fdrs_paths$Pt ))) 
 venn::venn( path_lists,
          zcolor= viridis(3), col=NA,
          snames=c("Recurrently \n enriched\n pathways", "Pathways enriched \n from recurrent genes"), box = FALSE,
@@ -370,52 +390,55 @@ path_overlap <-  intersect(path_lists[[1]], path_lists[[2]])
 
 ### 5. Assessing recurrent genes and their co-expresssion 
 #### a. Filtering by individual study
+For every study, we can take their DEGs and run a co-expression filtering of the genes that are commonly co-expressed.
 ```{r}
 network_type <- "generic"
 load(file="../out_test/down_median_asdist.Rdata" ) 
- 
 #res.down <- run_filtering(  subgenesets, "down", network_type, outputflag = FALSE )
 pre_post_mat <- get_recur_mat( cbind(res.down$Recurrence_filtered, res.down$Recurrence)  )
-plot_2D_hist(pre_post_mat, res.down$FDRs$Pt, res.down$FDRs_filtered$Pt, col=recur_cols, xlab="Gene recurrence", ylab="Outlier gene recurrence")
-
+plot_2D_hist(pre_post_mat, 
+              res.down$FDRs$Pt, res.down$FDRs_filtered$Pt, 
+              col=recur_cols, 
+              xlab="Gene recurrence", ylab="Outlier gene recurrence")
+```
+<img src="./figures/plot_2D_hist_pd.png" height = 300/>
+```
 network_type <- "brain"
 load(file="../out_test/brain_down_median_asdist.Rdata" ) 
 
 #res.brain <- run_filtering( subgenesets, "down", network_type, outputflag = FALSE )
 pre_post_mat <- get_recur_mat( cbind(res.brain$Recurrence_filtered, res.brain$Recurrence)  )
-plot_2D_hist(pre_post_mat, res.brain$FDRs$Pt, res.brain$FDRs_filtered$Pt, col=recur_cols, xlab="Gene recurrence", ylab="Outlier gene recurrence")
+plot_2D_hist(pre_post_mat, 
+              res.brain$FDRs$Pt, res.brain$FDRs_filtered$Pt, 
+              col=recur_cols, 
+              xlab="Gene recurrence", ylab="Outlier gene recurrence")
 
 network_type <- "blood"
 load(file="..//out_test/blood_down_median_asdist.Rdata" ) 
 #res.blood <- run_filtering( subgenesets, "down", network_type, outputflag = FALSE )
 pre_post_mat <- get_recur_mat( cbind(res.blood$Recurrence_filtered, res.blood$Recurrence)  )
-plot_2D_hist(pre_post_mat, res.blood$FDRs$Pt, res.blood$FDRs_filtered$Pt, col=recur_cols, xlab="Gene recurrence", ylab="Outlier gene recurrence")
+plot_2D_hist(pre_post_mat, 
+              res.blood$FDRs$Pt, res.blood$FDRs_filtered$Pt, 
+              col=recur_cols, 
+              xlab="Gene recurrence", ylab="Outlier gene recurrence")
 ```
-
-
 
 #### b. Filtering on the recurrent set 
 ```{r}
 load("../out_test/junk/recur_example.Rdata") 
 filt_min <- 6 
-
 gene_list = names(recur[recur>=fdrs$Pt]  )  
 gene_list_entrez <- EGAD::attr.human$entrezID[match(gene_list, EGAD::attr.human$name) ] 
-
 network_type = "generic"
-
 # sub_nets <- subset_network_hdf5_gene_list(gene_list_entrez , "generic", dir=GLOBAL_DIR)
-
 clust_net <- cluster_coexp(  sub_nets$sub_net$genes, medK = as.numeric(sub_nets$median ) )
 clust_size <- plyr::count(clust_net$clusters$labels )
-
 clust_keep <-  clust_size[clust_size[,2] < filt_min ,1]
 genes_keep <- !is.na(match( clust_net$clusters$labels, clust_keep))
-
 plot_coexpression_heatmap(  clust_net$distance_matrix, clust_net, filt=TRUE)
 plot_network( sub_nets$sub_net$genes, clust_net , 1 - as.numeric(sub_nets$median ))
-
 ```
+
 
 
 ## Using the package to assess gene lists or with other networks
