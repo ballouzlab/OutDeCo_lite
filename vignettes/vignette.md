@@ -297,12 +297,15 @@ Note, a maximum of 7 studies can be used in a venn diagram, so if the number of 
 Next, we look for pathway enrichment, and pathway-level recurrence. 
 ```{r eval=FALSE}
 n_studies <- dim(subgenesets)[2]
-annotations = make_annotations(GO.human[,c(1,3)], (unique(GO.human[,1])), go.slim[ff,1])
-go.enrich = lapply(1:n, function(i) gene_set_enrichment( names(which(subgenesets[,i]==1)), annotations, go.slim[ff,1:2]))
-paths = sapply(1:n, function(i) (go.enrich[[i]]$padj<0.05)*1 )
-paths.padj = sapply(1:n, function(i) (go.enrich[[i]]$padj) )
-rownames(paths) = go.enrich[[1]][,1]
-rownames(paths.padj) = go.enrich[[1]][,1]
+studies <- colnames(subgenesets)
+annotations <- EGAD::make_annotations(GO.human[,c(1,3)], (unique(GO.human[,1])), go.slim[ff,1])
+go.enrich <-  lapply(1:n_studies, function(i) gene_set_enrichment( names(which(subgenesets[,i]==1)), annotations, go.slim[ff,1:2]))
+paths <-  sapply(1:n_studies, function(i) (go.enrich[[i]]$padj<0.05)*1 )
+paths.padj <-  sapply(1:n_studies, function(i) (go.enrich[[i]]$padj) )
+rownames(paths) <-  go.enrich[[1]][,1]
+rownames(paths.padj) <- go.enrich[[1]][,1]
+colnames(paths) <- studies
+colnames(paths.padj) <- studies
 
 
 f = rowSums( paths) > 1
@@ -310,20 +313,22 @@ sigtemp= paths
 sigtemp[sigtemp==1] = "*"
 sigtemp[sigtemp==0] = ""
 
-heatmap.3( -log10(paths.padj[f,]), Colv=F, Rowv=F, col=cols9,cexRow = 0.7, cellnote=sigtemp[f,], notecol="black", notecex=2 )
- 
-
-genes.sub = subgenesets[recur>0,]
-m = match(rownames(genes.sub), rownames(annotations))
-f.r = !is.na(m)
-f.a = m[f.r]
-go.sub = annotations[f.a,]
-pheatmap(go.sub)
-pheatmap(genes.sub[f.r,] )
-pheatmap(paths.padj)
-
+heatmap.2( -log10(t(paths.padj[f,])), Colv=F, Rowv=F, 
+           col=cols9, cexRow = 0.7,  
+           cellnote=t(sigtemp[f,]), 
+           notecol="black", 
+           notecex=2, 
+           keysize=1, 
+           key.xlab="-log10 adjusted P-value", 
+           key.title="Enrichment", trace="none", density="none" )
 ```
-
+<img src="./figures/heatmap_pd_enrichment.png" height = 300/> 
+```
+fdrs_paths  <- calc_fdrs_recur( paths )
+plot_recurrence( paths, fdrs_paths, n_studies, flag_plot = "hist") 
+plot_recurrence( paths, fdrs_paths, n_studies, flag_plot = "heat") 
+```
+<img src="./figures/plot_recurrence_pd_paths.png" height = 300/> <img src="./figures/plot_recurrence_heat_pd_paths.png" height = 300/>
 
 
 ### 4. Assessing recurrent genes 
