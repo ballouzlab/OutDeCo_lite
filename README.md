@@ -1,4 +1,4 @@
-# OutDeCo <img src="./figures/sticker2.gif" align="right" height = 150/>
+# OutDeCo <img src="./vignettes/figures/sticker2.gif" align="right" height = 150/>
 *OutDeCo*: Outlier detection through co-expression. The purpose of this package is to assess genes - more specifically differentially expressed genes - with respect to their co-expression properties. 
 
 # Introduction 
@@ -9,7 +9,7 @@ Genes do not act alone. They participate in pathways (genetic interactions) or f
 
 However, this misses an interesting and potentially important counterfactual. What if the genes are no-longer functioning in their respective roles i.e., with their common interacting partners? Rather, it might be that genes acting uncharacteristically are of relevance to the dysfunction. We call these rogue actor genes “functional outliers”. In this scenario, a gene set enrichment analysis will miss these genes. 
 
-![principle](./figures/fig_outliers_network.png)
+![principle](./vignettes/figures/fig_outliers_network.png)
 
 
 
@@ -21,7 +21,7 @@ The functions implemented in *OutDeCo* can be applied to human gene expression d
   * Run a network connectivity analysis of DE results within a gene co-expression network
 
 
-![principle2](./figures/fig_outliers_matrix.png)
+![principle2](./vignettes/figures/fig_outliers_matrix.png)
 
 
 
