@@ -68,10 +68,3 @@ devtools::install_github("sarbal/OutDeCo")
 ```
 
 
-# Package Overview
-In this section we give an overview of the core functions and main features of the package. For usage and applications see the examples in the following sections. In addition, concise examples are included in the function documentation.
-
-Gene networks are commonly used as a means of representing relationships between genes. 
-
- 
- 
