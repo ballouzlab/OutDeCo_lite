@@ -450,6 +450,11 @@ plot_coexpression_heatmap(  clust_net$distance_matrix, clust_net, filt=TRUE)
 plot_network( sub_nets$sub_net$genes, clust_net , 1 - as.numeric(sub_nets$median ))
 ```
 
+
+```{r} 
+```
+<img src="./figures/riverplot.png" height = 300/>
+
 ## Using the package to assess gene lists or with other networks
 ### 1. Assessing a gene list and their co-expresssion 
 ```{r}
