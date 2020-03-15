@@ -92,14 +92,14 @@ data(labels)
 
 ### 2. Run a DE analysis 
 #### a. Using the wilcox.test
+Let's peform a sex differential expression analysis. Our data has individuals from famiy trios and quads, so we have to pick the samples we need. 
 ```{r eval=F}
-# Let's peform a sex differential expression analysis 
 groups <- as.numeric(labels$Sex) 
-# We ignore family 1, and remove the probands 
 groups[labels$Family==1] <- 0
 groups[labels$Relationship == "prb"] <- 0
-
-# We run a basic DE
+```
+We then run a basic differential expression, males versus females, and plot the resulting genes.
+```{r}
 deg <- calc_DE(counts_data, groups, "wilcox")
 plot( deg$degs$log2_fc, -log10(deg$degs$pvals), 
       pch=19, bty="n", 
@@ -112,7 +112,7 @@ plot( log2(deg$degs$mean_cpm),  deg$degs$log2_fc,
 
 
 #### b. Using other common methods 
-Alternatively, you can rundefault versions of either DESeq2 or edgeR: 
+Alternatively, we can run default versions of either DESeq2 or edgeR: 
 ```{r eval=FALSE}
 deg <- calc_DE(counts_data, groups, "DESeq2")
 plot( deg$degs$log2_fc, -log10(deg$degs$pvals), 
@@ -123,7 +123,8 @@ plot( log2(deg$degs$mean_cpm),  deg$degs$log2_fc,
       xlab="Average expression (log2 CPM + 1)", ylab="log2 FC" )
 ```
 <img src="./figures/DE_volcano_plot_deseq.png" height = 300/> <img src="./figures/DE_MA_plot_deseq.png" height = 300/>
-```{r{
+
+```{r}
 deg <- calc_DE(counts_data, groups, "edgeR")
 plot( deg$degs$log2_fc, -log10(deg$degs$pvals),  
       pch=19, bty="n", 
@@ -151,38 +152,35 @@ deg <- reformat_degs(degs_input, method)
 ```
 
 ## Using the package to assess a differentially expressed gene list
-### 1. Getting co-expression networks for DE genes from an expression dataset   
+### 1. Getting co-expression networks for DE genes from an expression dataset
+With the list of DEGs, we can view their co-expression profiles with the provided aggregate co-expression networks.  
 ```{r eval = FALSE}
 deg_output <- calc_DE(counts_data, groups, "wilcox")
 network_type <- 'generic'
 sub_nets <- subset_network_hdf5(deg_output$degs, network_type, dir=GLOBAL_DIR)
 ```
-
-## Using the package to assess a differentially expressed gene list
-
-### 1. Getting co-expression networks for DE genes from an expression dataset   
-```{r eval = FALSE}
-deg_output <- calc_DE(counts_data, groups, "wilcox")
-network_type <- 'generic'
-sub_nets <- subset_network_hdf5(deg_output$degs, network_type, dir=GLOBAL_DIR)
-```
-
+This returns a sub-network object with our data and useful properties.  
 ### 2. Cluster genes and assess modules 
-```{r eval = FALSE}
-clust_net = list()  
+```{r}
 deg_sig <- sub_nets$deg_sig
 fc_sig  <- sub_nets$fc_sig
 sub_net <- sub_nets$sub_net
 node_degrees <-  sub_nets$node_degrees 
 medK <-  as.numeric(sub_nets$median)
-# Cluster and plot a heatmap of the co-expression sub-network    
+```
+Cluster and plot a heatmap of the binary co-expression sub-network using the ```cluster_coexp``` function.    
+```{r}
+clust_net <- list()  
 clust_net[["up"]]  <- cluster_coexp( sub_net$up, medK = medK, flag_plot = TRUE )
+```
+<img src="./figures/plot_coexpression_heatmap_up.png" height = 300/>
 
-# Cluster and then plot
-clust_net[["down"]]  <- cluster_coexp( sub_net$down)
+Or cluster and then use the ```plot_coexpression_heatmap``` function to visualize the underlying data.  
+```{r}
+clust_net[["down"]]  <- cluster_coexp( sub_net$down, medK = medK)
 plot_coexpression_heatmap( sub_net$down, clust_net$down)
 ```
-<img src="./figures/plot_coexpression_heatmap_up.png" height = 300/> <img src="./figures/plot_coexpression_heatmap_down.png" height = 300/>
+<img src="./figures/plot_coexpression_heatmap_down.png" height = 300/>
 
 You can look at the node degrees to get a sense of the global/local connectivities of the genes. 
 ```{r eval = FALSE}
