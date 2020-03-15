@@ -182,7 +182,7 @@ plot_coexpression_heatmap( sub_net$down, clust_net$down)
 ```
 <img src="./figures/plot_coexpression_heatmap_down.png" height = 300/>
 
-You can look at the node degrees to get a sense of the global/local connectivities of the genes. 
+You can look at the node degrees to get a sense of the global and local connectivities of the genes. 
 ```{r eval = FALSE}
 plot_scatter(node_degrees$up[,1]/node_degrees$n_genes_total, 
                   node_degrees$up[,2]/node_degrees$n_genes_up, 
@@ -196,7 +196,7 @@ plot_scatter(node_degrees$up[,1]/node_degrees$n_genes_total,
 ```
 <img src="./figures/plot_scatter_hist_up.png" height = 300/> <img src="./figures/plot_scatter_density_up.png" height = 300/> 
 
-Or by cluster (colored) 
+And view them or subset them by their clusters.
 ```{r eval = FALSE}
 m <- match(clust_net$down$clusters$genes , rownames(sub_net$down))
 plot_scatter(node_degrees$down[m,1]/node_degrees$n_genes_total, 
@@ -209,7 +209,7 @@ plot_scatter(node_degrees$down[m,1]/node_degrees$n_genes_total,
 
 
 Alternatively, we can assess the genes using their average connectivity properties in the network.
-For this, we run a neighbor-voting algorithm (in the EGAD? package). 
+For this, we run a neighbor-voting algorithm (in the EGAD? package). NEED TO FIX THIS. 
 ```{r}
 gene_sets <- matrix(0, nrow= dim(deg_sub)[1], ncol = 2 )
 colnames(gene_sets) <- c("up", "down") 
@@ -240,13 +240,12 @@ plot_scatter(loocv$up[m,1], loocv$up[m,2],
 ```
 <img src="./figures/plot_scatter_hist_loocv_down.png" height = 300/> <img src="./figures/plot_scatter_hist_loocv_up_colored.png" height = 300/> 
 
-Finally, we can assess the functional outliers within the results. These are the genes that are DE but do not show local co-expression. 
+Finally, we can assess the functional outliers within the sub-networks. These are the genes that are DE but do not show local co-expression. Here, we consider genes forming a module if there are more than 6 genes. 
 ```{r eval=FALSE }
-filt_min <-6 
+filt_min <- 6 
 clust_size <- plyr::count(clust_net$down$clusters$labels )
 clust_keep <-  clust_size[clust_size[,2] < filt_min ,1]
 genes_keep <- !is.na(match( clust_net$down$clusters$labels, clust_keep))
-
 plot_coexpression_heatmap(  sub_net$down, clust_net$down, filt=TRUE)
 plot_network(sub_net$down, clust_net$down , 1 - medK)
 ```
