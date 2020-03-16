@@ -419,7 +419,16 @@ plot_network( sub_nets$sub_net$genes, clust_net , 1 - as.numeric(sub_nets$median
 ```
 <img src="./figures/plot_coexpression_heatmap_pd_recur.png" height = 300/> <img src="./figures/plot_network_pd_recur.png" height = 300/>
 
-```{r} 
+
+#### c. Assessing individual studies
+```{r}
+medK.blood  <- as.numeric(rhdf5::h5read("S:/data/agg_coexp/blood.occr.med.h5", "median" ))
+medK.brain  <- as.numeric(rhdf5::h5read("S:/data/agg_coexp/brain.occr.med.h5", "median" ))
+net1 <- res.brain$sub_networks[[1]] 
+clust_net1 <- cluster_coexp( net1 , medK = medK.brain )
+net2 <-  res.blood$sub_networks[[1]] 
+clust_net2 <- cluster_coexp( net2 , medK = medK.blood )
+plot_compare_networks(net1, net2, clust_net1, clust_net2) 
 ```
 <img src="./figures/riverplot.png" height = 300/>
 
