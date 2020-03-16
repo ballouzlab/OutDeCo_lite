@@ -458,26 +458,8 @@ plot_network( sub_nets$sub_net$genes, clust_net , 1 - as.numeric(sub_nets$median
 <img src="./figures/plot_coexpression_heatmap_recurrent_ASD.png" height = 300/> <img src="./figures/plot_network_recurrent_ASD.png" height = 300/>
 
 
-<img src="./figures/asd_riverplot.png" height = 300/>
-
 ### 2. Assessing a gene list and their PPIN  
 ```{r}
-# Change to data example 
-load("../out_test/junk/ASD/asd_gene_sets.Rdata")
-load("../out_test/junk/ASD/asd_example_data.Rdata")
-# 
-filt_min <- 6 # Adjust/change  
-gene_list <- rownames(asd.genes.tally)[asd.genes.tally[,17]==1]   
-gene_list_entrez <- EGAD::attr.human$entrezID[match(gene_list, EGAD::attr.human$name) ] 
-network_type = "generic"
-# This takes some time, so pre-loading it instead 
-# sub_nets <- subset_network_hdf5_gene_list(gene_list_entrez , "generic", dir=GLOBAL_DIR)
-clust_net <- cluster_coexp(  sub_nets$sub_net$genes, medK = as.numeric(sub_nets$median ) )
-clust_size <- plyr::count(clust_net$clusters$labels )
-clust_keep <-  clust_size[clust_size[,2] < filt_min ,1]
-genes_keep <- !is.na(match( clust_net$clusters$labels, clust_keep))
-plot_coexpression_heatmap(  sub_nets$sub_net$genes, clust_net, filt=TRUE)
-plot_network( sub_nets$sub_net$genes, clust_net , 1 - as.numeric(sub_nets$median ))
 ```
 
 # Acknowledgements
