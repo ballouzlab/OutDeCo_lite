@@ -458,6 +458,7 @@ plot_network( sub_nets$sub_net$genes, clust_net , 1 - as.numeric(sub_nets$median
 <img src="./figures/plot_coexpression_heatmap_recurrent_ASD.png" height = 300/> <img src="./figures/plot_network_recurrent_ASD.png" height = 300/>
 
 
+<img src="./figures/asd_riverplot.png" height = 300/>
 
 ### 2. Assessing a gene list and their PPIN  
 ```{r}
