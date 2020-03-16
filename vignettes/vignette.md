@@ -92,7 +92,7 @@ data(labels)
 
 ### 2. Run a DE analysis 
 #### a. Using the wilcox.test
-Let's peform a sex differential expression analysis. Our data has individuals from famiy trios and quads, so we have to pick the samples we need. 
+Let's peform a sex differential expression analysis. Our data has individuals from family trios and quads, so we have to first pick the samples we need. 
 ```{r eval=F}
 groups <- as.numeric(labels$Sex) 
 groups[labels$Family==1] <- 0
