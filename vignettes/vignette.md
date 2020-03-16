@@ -264,12 +264,10 @@ EGAD::attr.human[match( clust_net$down$clusters$genes[genes_keep] , EGAD::attr.h
 <img src="./figures/genes_remaining.png" height = 300/> 
 
 ## Using the package to run a recurrence analysis
-We can run the co-expression analyss in a meta-analytic framework. Here, we take multiple DE lists and use their recurrent DE properties. This method allows us to assess the prior probabilities of DEGs along with their co-expression properties. 
+We can run the co-expression analysis in a meta-analytic framework. Here, we take multiple DE lists and use their DE recurrence to assess their phenotype association likelihood. This method allows us to assess the prior probabilities of DEGs along with their co-expression properties, as it allows us to combine studies across what could be varying conditions and sample sizes. 
 
 ### 1. Collecting DE sets    
-One option is to use other databases to perform a meta-analysis. You will need either multiple expression experiments or multiple differentially expressed gene (DEGs) lists. 
-As studies are variable and samples may overlap, this is best done in a curated manner.
-We have three example disease sets for your persual. Here we show a meta-analysis of Parkinson's disease.  
+For a meta-analysis, you will need either multiple expression experiments or multiple differentially expressed gene (DEGs) lists. As studies are variable and samples may overlap, this is best done in a curated manner. We have provided three example disease sets for your persual. Here we show a meta-analysis of Parkinson's disease.  
 First load the data. In this example, we will load the sets of DEGs. For more info on how to do this, see the **notes**. 
 ```{r}
 data(genesets_down)
@@ -277,22 +275,20 @@ data(genesets_up)
 data(pd_studies) 
 ```
 
-We've split the data into up and down-regulated genes by study; we analyze them independently. 
-
-### 2. Calculating recurrence 
-These are the 15 studies and the number of genes that were significantly upregulated in each.
+We've split the data into up- and downregulated genes by study; we analyze them independently but focus on the downregulated. First, we plot the number of genes that were significantly downregulated in each of the 15 studies.
 ```{r}
 n_studies <- dim(genesets_down)[2]
 studies <- colnames(genesets_down)
 bp <- barplot(colSums(genesets_down) , horiz = T, xlab = "Number of downregulated DEGs", 
               names=F, col=viridis::inferno(n_studies), border=NA, space = 0)
 text(1000, bp, studies)
-subgenesets <- (genesets_down)*1
 ```
 <img src="./figures/barplot_pd_downregulated_genes.png" height = 300/> 
- 
+
+### 2. Calculating recurrence 
 To find gene-level recurrence, we simply sum the rows, and permute to calculate the signficance (or use a bionomial test).  
 ```{r}
+subgenesets <- (genesets_down)*1
 fdrs <- calc_fdrs_recur( subgenesets )
 fdrs_bin <- calc_binom_recur(subgenesets)
 recur <- rowSums(subgenesets, na.rm=T)
