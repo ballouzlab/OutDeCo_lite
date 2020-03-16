@@ -272,21 +272,22 @@ As studies are variable and samples may overlap, this is best done in a curated 
 We have three example disease sets for your persual. Here we show a meta-analysis of Parkinson's disease.  
 First load the data. In this example, we will load the sets of DEGs. For more info on how to do this, see the **notes**. 
 ```{r}
-load("../out_test/junk/pd.DE.Rdata")
+data(genesets_down)
+data(genesets_up)
+data(pd_studies) 
 ```
-This file has two large matrices, genes by study, one with downregulated genes, and one with the upregulated genes. We analyze them independently. 
 
+We've split the data into up and down-regulated genes by study; we analyze them independently. 
 
 ### 2. Calculating recurrence 
-These are the X studies and the number of genes that were significantly upregulated in each.
+These are the 15 studies and the number of genes that were significantly upregulated in each.
 ```{r}
-n_studies <- dim(genes.down)[2]
-studies <- colnames(genes.down)
-bp <- barplot(colSums(genes.down) , horiz = TRUE, 
-              xlab = "Number of downregulated DEGs", 
-              names = FALSE, col=inferno(n_studies), border=NA, space = 0)
+n_studies <- dim(genesets_down)[2]
+studies <- colnames(genesets_down)
+bp <- barplot(colSums(genesets_down) , horiz = T, xlab = "Number of downregulated DEGs", 
+              names=F, col=viridis::inferno(n_studies), border=NA, space = 0)
 text(1000, bp, studies)
-subgenesets <- (genes.down[fg,])*1
+subgenesets <- (genesets_down)*1
 ```
 <img src="./figures/barplot_pd_downregulated_genes.png" height = 300/> 
  
@@ -306,38 +307,33 @@ Note, a maximum of 7 studies can be used in a venn diagram, so if the number of 
 ### 3. Assessing enrichment 
 Next, we look for pathway enrichment, and pathway-level recurrence. 
 ```{r eval=FALSE}
+data(go_slim)
+data(go_voc)
+filt <- colSums( go_slim ) < 5000 & colSums( go_slim ) >= 10
 n_studies <- dim(subgenesets)[2]
 studies <- colnames(subgenesets)
-annotations <- EGAD::make_annotations(GO.human[,c(1,3)], (unique(GO.human[,1])), go.slim[ff,1])
-go.enrich <-  lapply(1:n_studies, function(i) 
-                     gene_set_enrichment( names(which(subgenesets[,i]==1)), 
-                                          annotations, 
-                                          go.slim[ff,1:2]))
-paths <-  sapply(1:n_studies, function(i) (go.enrich[[i]]$padj<0.05)*1 )
-paths.padj <-  sapply(1:n_studies, function(i) (go.enrich[[i]]$padj) )
-rownames(paths) <-  go.enrich[[1]][,1]
-rownames(paths.padj) <- go.enrich[[1]][,1]
-colnames(paths) <- studies
-colnames(paths.padj) <- studies
+gene_list <- lapply(1:n_studies, function(i) names(which(subgenesets[,i]==1) )) 
 
+go_enrich <-  lapply(1:n_studies, function(i) gene_set_enrichment(gene_list[[i]], go_slim[filt,], go_voc))
+plot_enrichment(go_enrich, n_studies)
 
-f = rowSums( paths) > 1
-sigtemp= paths
-sigtemp[sigtemp==1] = "*"
-sigtemp[sigtemp==0] = ""
+paths <-  sapply(1:n_studies, function(i) (go_enrich[[i]]$padj<0.05)*1 )
+   paths.padj <-  sapply(1:n_studies, function(i) (go_enrich[[i]]$padj) )
+   rownames(paths) <-  go_enrich[[1]][,1]
+   rownames(paths.padj) <- go_enrich[[1]][,1]
+   colnames(paths) <- studies
+   colnames(paths.padj) <- studies
+   
+   
+fdrs_paths  <- calc_fdrs_recur( paths )
+plot_recurrence( paths, fdrs_paths, n_studies, flag_plot = "hist") 
+plot_recurrence( paths, fdrs_paths, n_studies, flag_plot = "heat") 
 
-heatmap.2( -log10(t(paths.padj[f,])), Colv=F, Rowv=F, 
-           col=cols9, cexRow = 0.7,  
-           cellnote=t(sigtemp[f,]), 
-           notecol="black", 
-           notecex=2, 
-           keysize=1, 
-           key.xlab="-log10 adjusted P-value", 
-           key.title="Enrichment", trace="none", density="none" )
+ 
 ```
 <img src="./figures/heatmap_pd_enrichment.png" height = 300/> 
 
-We can run a pathway recurrence analysis too. 
+We can run a pathway recurrence analysis here to assess the enrichment results. 
 ```{r}
 fdrs_paths  <- calc_fdrs_recur( paths )
 plot_recurrence( paths, fdrs_paths, n_studies, flag_plot = "hist") 
@@ -353,45 +349,20 @@ Here, we find a few GO terms that are recurrent across the studies, all related 
 We can then look at the enrichment of the recurrent genes. Genes that recur 4 or more times are significant. 
 ```{r eval=FALSE}
 n_max_recur <-  max(recur)
-go.enrich.recur <- lapply(1:n_max_recur, function(i) 
-                          gene_set_enrichment( names(recur[recur>(i-1)]), 
-                                               annotations, 
-                                               go.slim[ff,1:2]))
-pathsrec      <- sapply(1:n_max_recur, function(i) (go.enrich.recur[[i]]$padj<0.05)*1 )
-pathsrec.padj <- sapply(1:n_max_recur, function(i) go.enrich.recur[[i]]$padj )
-rownames(pathsrec)      <- go.enrich.recur[[1]][,1]
-rownames(pathsrec.padj) <- go.enrich.recur[[1]][,1]
-heatmap.2( -log10(t(pathsrec.padj[f,])), Colv=F, Rowv=F, 
-           col=cols9, cexRow = 0.7,   
-           notecol="black", 
-           notecex=2, 
-           keysize=1, 
-           key.xlab="-log10 adjusted P-value", 
-           key.title="Enrichment", trace="none", density="none" )
+gene_list <- lapply(1:n_max_recur, function(i) names(recur[recur>(i-1)]) )
+go_enrich_recur <- lapply(1:n_max_recur, function(i) gene_set_enrichment(gene_list[[i]] , go_slim[filt,], go_voc))
+names(go_enrich_recur) <- 1:n_max_recur 
+plot_enrichment(go_enrich_recur, n_max_recur)
 ```
 <img src="./figures/heatmap_recurrent_enrich.png" height = 300/>
-Genes that recur 4 or more times (~ genes) are enriched for vesicle-mediated terms. These overlap with the recurrently enriched pathways. 
-
-```{r}
-path_lists <- list( names(which((pathsrec[,4]) > 0 )), 
-                    names(which( rowSums(paths) >= fdrs_paths$Pt ))) 
-venn::venn (path_lists,
-         zcolor= viridis(3), col=NA,
-         snames=c("Recurrently \n enriched\n pathways", "Pathways enriched \n from recurrent genes"), 
-         box = FALSE,
-         ilcs = 1, sncs = 1.5)
-
-path_overlap <-  intersect(path_lists[[1]], path_lists[[2]])  
-```
-<img src="./figures/venn_path_overlap.png" height = 300/>
+The recurrent set is not enriched for any pathways. 
 
 ### 5. Assessing recurrent genes and their co-expresssion 
 #### a. Filtering by individual study
 For every study, we can take their DEGs and run a co-expression filtering of the genes that are commonly co-expressed.
 ```{r}
-network_type <- "generic"
-load(file="../out_test/down_median_asdist.Rdata" ) 
-#res.down <- run_filtering(  subgenesets, "down", network_type, outputflag = FALSE )
+#load(file="../out_test/down_median_asdist.Rdata" ) 
+res.down <- run_filtering(  subgenesets, "down", "generic", outputflag = FALSE )
 pre_post_mat <- get_recur_mat( cbind(res.down$Recurrence_filtered, res.down$Recurrence)  )
 plot_2D_hist(pre_post_mat, 
               res.down$FDRs$Pt, res.down$FDRs_filtered$Pt, 
@@ -406,19 +377,14 @@ This shows genes that are recurrent but not commonly co-expressed in the network
 
 We can repeat this analysis on other networks (here brain and blood aggregates). 
 ```{r}
-network_type <- "brain"
-load(file="../out_test/brain_down_median_asdist.Rdata" ) 
-
-#res.brain <- run_filtering( subgenesets, "down", network_type, outputflag = FALSE )
+res.brain <- run_filtering( subgenesets, "down", "brain", outputflag = FALSE )
 pre_post_mat <- get_recur_mat( cbind(res.brain$Recurrence_filtered, res.brain$Recurrence)  )
 plot_2D_hist(pre_post_mat, 
               res.brain$FDRs$Pt, res.brain$FDRs_filtered$Pt, 
               col=recur_cols, 
               xlab="Gene recurrence", ylab="Outlier gene recurrence")
 
-network_type <- "blood"
-load(file="..//out_test/blood_down_median_asdist.Rdata" ) 
-#res.blood <- run_filtering( subgenesets, "down", network_type, outputflag = FALSE )
+res.blood <- run_filtering( subgenesets, "down", "blood", outputflag = FALSE )
 pre_post_mat <- get_recur_mat( cbind(res.blood$Recurrence_filtered, res.blood$Recurrence)  )
 plot_2D_hist(pre_post_mat, 
               res.blood$FDRs$Pt, res.blood$FDRs_filtered$Pt, 
@@ -431,22 +397,27 @@ The outlier analysis shifts, with our set of genes showing co-expression in the 
 <img src="./figures/plot_2D_hist_pd_brain.png" height = 300/> <img src="./figures/plot_2D_hist_pd_blood.png" height = 300/>
 
 
-#### b. Filtering on the recurrent set 
+#### b. Assessing the recurrent set 
 ```{r}
 load("../out_test/junk/recur_example.Rdata") 
 filt_min <- 6 
-gene_list = names(recur[recur>=fdrs$Pt]  )  
+
+gene_list <- names(recur[recur>=fdrs$Pt]  )  
 gene_list_entrez <- EGAD::attr.human$entrezID[match(gene_list, EGAD::attr.human$name) ] 
-network_type = "generic"
+
+ 
 # sub_nets <- subset_network_hdf5_gene_list(gene_list_entrez , "generic", dir=GLOBAL_DIR)
+
 clust_net <- cluster_coexp(  sub_nets$sub_net$genes, medK = as.numeric(sub_nets$median ) )
 clust_size <- plyr::count(clust_net$clusters$labels )
+
 clust_keep <-  clust_size[clust_size[,2] < filt_min ,1]
 genes_keep <- !is.na(match( clust_net$clusters$labels, clust_keep))
+
 plot_coexpression_heatmap(  clust_net$distance_matrix, clust_net, filt=TRUE)
 plot_network( sub_nets$sub_net$genes, clust_net , 1 - as.numeric(sub_nets$median ))
 ```
-
+<img src="./figures/plot_coexpression_heatmap_pd_recur.png" height = 300/> <img src="./figures/plot_network_pd_recur.png" height = 300/>
 
 ```{r} 
 ```
