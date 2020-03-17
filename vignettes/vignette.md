@@ -425,27 +425,5 @@ plot_compare_networks(net1, net2, clust_net1, clust_net2)
 ```
 <img src="./figures/riverplot.png" height = 300/>
 
-## Using the package to assess gene lists or with other networks
-### 1. Assessing a gene list and their co-expresssion 
-```{r}
-data(asd_sub_nets)
-
-clust_net <- cluster_coexp(  asd_sub_nets$sub_net$genes, medK = as.numeric(asd_sub_nets$median ) )
-clust_size <- plyr::count(clust_net$clusters$labels )
-
-clust_keep <-  clust_size[clust_size[,2] < filt_min ,1]
-genes_keep <- !is.na(match( clust_net$clusters$labels, clust_keep))
-
-plot_coexpression_heatmap(  asd_sub_nets$sub_net$genes, clust_net, filt=TRUE)
-plot_network( asd_sub_nets$sub_net$genes, clust_net , 1 - as.numeric(asd_sub_nets$median ))
-```
-<img src="./figures/plot_coexpression_heatmap_recurrent_ASD.png" height = 300/> <img src="./figures/plot_network_recurrent_ASD.png" height = 300/>
-
-
-### 2. Assessing a gene list and their PPIN  
-```{r}
-
-```
-
 # Acknowledgements
 
