@@ -357,11 +357,11 @@ The recurrent set is not enriched for any pathways.
 #### a. Filtering by individual study
 For every study, we can take their DEGs and run a co-expression filtering of the genes that are commonly co-expressed.
 ```{r}
-#load(file="../out_test/down_median_asdist.Rdata" ) 
-res.down <- run_filtering(  subgenesets, "down", "generic", outputflag = FALSE )
-pre_post_mat <- get_recur_mat( cbind(res.down$Recurrence_filtered, res.down$Recurrence)  )
+data(res_down)
+#res_down <- run_filtering(  subgenesets, "down", "generic", outputflag = FALSE )
+pre_post_mat <- get_recur_mat( cbind(res_down$Recurrence_filtered, res_down$Recurrence)  )
 plot_2D_hist(pre_post_mat, 
-              res.down$FDRs$Pt, res.down$FDRs_filtered$Pt, 
+              res_down$FDRs$Pt, res_down$FDRs_filtered$Pt, 
               col=recur_cols, 
               xlab="Gene recurrence", ylab="Outlier gene recurrence")
 ```
@@ -373,19 +373,22 @@ This shows genes that are recurrent but not commonly co-expressed in the network
 
 We can repeat this analysis on other networks (here brain and blood aggregates). 
 ```{r}
-res.brain <- run_filtering( subgenesets, "down", "brain", outputflag = FALSE )
-pre_post_mat <- get_recur_mat( cbind(res.brain$Recurrence_filtered, res.brain$Recurrence)  )
-plot_2D_hist(pre_post_mat, 
-              res.brain$FDRs$Pt, res.brain$FDRs_filtered$Pt, 
-              col=recur_cols, 
-              xlab="Gene recurrence", ylab="Outlier gene recurrence")
+data(res_brain)
+data(res_blood)
 
-res.blood <- run_filtering( subgenesets, "down", "blood", outputflag = FALSE )
-pre_post_mat <- get_recur_mat( cbind(res.blood$Recurrence_filtered, res.blood$Recurrence)  )
+#res_brain <- run_filtering( subgenesets, "down", "brain", outputflag = FALSE )
+pre_post_mat <- get_recur_mat( cbind(res_brain$Recurrence_filtered, res_brain$Recurrence)  )
 plot_2D_hist(pre_post_mat, 
-              res.blood$FDRs$Pt, res.blood$FDRs_filtered$Pt, 
+              res_brain$FDRs$Pt, res_brain$FDRs_filtered$Pt, 
               col=recur_cols, 
-              xlab="Gene recurrence", ylab="Outlier gene recurrence")
+              xlab="Gene recurrence", ylab="Outlier gene recurrence", main="Brain")
+
+#res_blood <- run_filtering( subgenesets, "down", "blood", outputflag = FALSE )
+pre_post_mat <- get_recur_mat( cbind(res_blood$Recurrence_filtered, res_blood$Recurrence)  )
+plot_2D_hist(pre_post_mat, 
+              res_blood$FDRs$Pt, res_blood$FDRs_filtered$Pt, 
+              col=recur_cols, 
+              xlab="Gene recurrence", ylab="Outlier gene recurrence", main="Blood")
 ```
 
 The outlier analysis shifts, with our set of genes showing co-expression in the brain and being filtered away. However, most genes remain recurrent (as outliers) in the blood. 
