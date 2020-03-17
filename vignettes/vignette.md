@@ -313,24 +313,18 @@ gene_list <- lapply(1:n_studies, function(i) names(which(subgenesets[,i]==1) ))
 go_enrich <-  lapply(1:n_studies, function(i) gene_set_enrichment(gene_list[[i]], go_slim[filt,], go_voc))
 plot_enrichment(go_enrich, n_studies)
 
-paths <-  sapply(1:n_studies, function(i) (go_enrich[[i]]$padj<0.05)*1 )
-   paths.padj <-  sapply(1:n_studies, function(i) (go_enrich[[i]]$padj) )
-   rownames(paths) <-  go_enrich[[1]][,1]
-   rownames(paths.padj) <- go_enrich[[1]][,1]
-   colnames(paths) <- studies
-   colnames(paths.padj) <- studies
-   
-   
-fdrs_paths  <- calc_fdrs_recur( paths )
-plot_recurrence( paths, fdrs_paths, n_studies, flag_plot = "hist") 
-plot_recurrence( paths, fdrs_paths, n_studies, flag_plot = "heat") 
-
- 
 ```
 <img src="./figures/heatmap_pd_enrichment.png" height = 300/> 
 
 We can run a pathway recurrence analysis here to assess the enrichment results. 
 ```{r}
+paths <-  sapply(1:n_studies, function(i) (go_enrich[[i]]$padj<0.05)*1 )
+paths.padj <-  sapply(1:n_studies, function(i) (go_enrich[[i]]$padj) )
+rownames(paths) <-  go_enrich[[1]][,1]
+rownames(paths.padj) <- go_enrich[[1]][,1]
+colnames(paths) <- studies
+colnames(paths.padj) <- studies
+   
 fdrs_paths  <- calc_fdrs_recur( paths )
 plot_recurrence( paths, fdrs_paths, n_studies, flag_plot = "hist") 
 plot_recurrence( paths, fdrs_paths, n_studies, flag_plot = "heat") 
