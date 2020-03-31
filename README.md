@@ -37,10 +37,6 @@ Although not necessary, this method runs best on a HPC with 20GB+ RAM. However, 
 This manual contains a usage guide and descriptions of the package. 
 
 
-## Citations
-This software package was developed by the Gillis lab at Cold Spring Harbor Laboratory and the Ballouz lab at the Garvan Institute of Medical Research. 
-
-
 ## How to get help
 Ask us! Please reach out. 
 
