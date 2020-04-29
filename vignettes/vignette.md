@@ -141,38 +141,6 @@ plot_scatter(node_degrees$down[m,1]/node_degrees$n_genes_total,
 <img src="./figures/plot_scatter_hist_down_colored.png" height = 300/> 
 
 
-Alternatively, we can assess the genes using their average connectivity properties in the network.
-For this, we run a neighbor-voting algorithm (in the EGAD? package). NEED TO FIX THIS. 
-```{r}
-gene_sets <- matrix(0, nrow= dim(deg_sub)[1], ncol = 2 )
-colnames(gene_sets) <- c("up", "down") 
-rownames(gene_sets) <- rownames(deg_sub) 
-gene_sets[deg_sig$up,1] <- 1 
-gene_sets[deg_sig$down,2] <- 1 
-
-network <- rhdf5::h5read("~/workspace/data/agg_coexp/generic.occr.net.h5", "net" )
-genes <- rhdf5::h5read("~/workspace/data/agg_coexp/generic.genes.h5", "genes" )
-colnames(network) = genes[,1]
-rownames(network) = genes[,1]
-
-loocv <- list() 
-loocv[["up"]]   <- neighbor_voting_loocv( gene_sets[,1], network)
-loocv[["down"]] <- neighbor_voting_loocv( gene_sets[,2], network)
-
-m <- match(clust_net$down$clusters[,1] ,  rownames(loocv$down) )
-plot_scatter(loocv$down[m,1], 
-                  loocv$down[m,3], 
-                  xlab="AUROC - LOOCV", 
-                  ylab="Local node degree")  
-
-m <- match(clust_net$up$clusters[,1] ,  rownames(loocv$up) )
-plot_scatter(loocv$up[m,1], loocv$up[m,2], 
-                  clusters = clust_net$up$clusters,
-                  xlab="AUROC - LOOCV", 
-                  ylab="Global node degree")  
-```
-<img src="./figures/plot_scatter_hist_loocv_down.png" height = 300/> <img src="./figures/plot_scatter_hist_loocv_up_colored.png" height = 300/> 
-
 Finally, we can assess the functional outliers within the sub-networks. These are the genes that are DE but do not show local co-expression. Here, we consider genes forming a module if there are more than 6 genes. 
 ```{r eval=FALSE }
 filt_min <- 6 
