@@ -291,7 +291,7 @@ The outlier analysis shifts, with our set of genes showing co-expression in the 
 
 <img src="./figures/plot_2D_hist_pd_brain.png" height = 300/> <img src="./figures/plot_2D_hist_pd_blood.png" height = 300/>
 
-Additionally, you can compare the a single study in the data. 
+Additionally, you can compare the co-expression properties of a single study. 
 ```{r}
 net1 <- res_brain$sub_networks[[1]] 
 clust_net1 <- cluster_coexp( net1 , medK = medK.brain )
