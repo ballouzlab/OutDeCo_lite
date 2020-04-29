@@ -43,20 +43,7 @@ Ask us! Please reach out.
 
 
 ## Installation
-To install this package, start R and enter
-
-```{r, eval=FALSE}
-if (!require("BiocManager"))
-    install.packages("BiocManager")
-BiocManager::install("OutDeCo", version = "devel")
-```
-
-To view this documentation in R, enter
-```{r, eval=FALSE}
-browseVignettes("OutDeCo")
-```
-
-Alternatively, use devtools for the development version. 
+Using devtools: 
 ```{r , eval=FALSE}
 # install.packages("devtools")
 devtools::install_github("sarbal/OutDeCo")
