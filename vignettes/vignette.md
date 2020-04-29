@@ -358,5 +358,4 @@ plot_compare_networks(net1, net2, clust_net1, clust_net2)
 ```
 <img src="./figures/riverplot.png" height = 300/>
 
-# Acknowledgements
 
