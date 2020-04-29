@@ -41,12 +41,16 @@ This manual contains a usage guide and descriptions of the package.
 Ask us! Please reach out. 
 
 
-
 ## Installation
 Using devtools: 
 ```{r , eval=FALSE}
 # install.packages("devtools")
 devtools::install_github("sarbal/OutDeCo")
 ```
-
+The co-expression networks needed are large, so before starting you will need to download them. But this only needs to happen once. If the files already exist in your current directory, they will not be downloaded again. 
+```{}
+download_network_hdf5(network_type="generic") 
+download_network_hdf5(network_type="blood") 
+download_network_hdf5(network_type="brain") 
+```
 
