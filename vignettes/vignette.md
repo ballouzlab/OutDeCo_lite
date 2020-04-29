@@ -249,7 +249,6 @@ plot_enrichment(go_enrich_recur, n_max_recur)
 The recurrent set is not enriched for any pathways. 
 
 ### 5. Assessing recurrent genes and their co-expresssion 
-#### a. Filtering by individual study
 For every study, we can take their DEGs and run a co-expression filtering of the genes that are commonly co-expressed.
 ```{r}
 data(res_down)
@@ -270,6 +269,8 @@ We can repeat this analysis on other networks (here brain and blood aggregates).
 ```{r}
 data(res_brain)
 data(res_blood)
+medK.blood  <- as.numeric(rhdf5::h5read("blood.occr.med.h5", "median" ))
+medK.brain  <- as.numeric(rhdf5::h5read("brain.occr.med.h5", "median" ))
 
 #res_brain <- run_filtering( subgenesets, "down", "brain", outputflag = FALSE )
 pre_post_mat <- get_recur_mat( cbind(res_brain$Recurrence_filtered, res_brain$Recurrence)  )
@@ -289,4 +290,14 @@ plot_2D_hist(pre_post_mat,
 The outlier analysis shifts, with our set of genes showing co-expression in the brain and being filtered away. However, most genes remain recurrent (as outliers) in the blood. 
 
 <img src="./figures/plot_2D_hist_pd_brain.png" height = 300/> <img src="./figures/plot_2D_hist_pd_blood.png" height = 300/>
+
+Additionally, you can compare the a single study in the data. 
+```{r}
+net1 <- res_brain$sub_networks[[1]] 
+clust_net1 <- cluster_coexp( net1 , medK = medK.brain )
+net2 <-  res_blood$sub_networks[[1]] 
+clust_net2 <- cluster_coexp( net2 , medK = medK.blood )
+plot_compare_networks(net1, net2, clust_net1, clust_net2) 
+```
+<img src="./figures/riverplot.png" height = 300/>
 
