@@ -47,7 +47,7 @@ Using devtools:
 # install.packages("devtools")
 devtools::install_github("sarbal/OutDeCo")
 ```
-The co-expression networks needed are large, so before starting you will need to download them. But this only needs to be done once. If the files already exist in your current directory, they will not be downloaded again. 
+The co-expression networks provided are large, so before starting you will need to download them to your local working directroy. If the files already exist in your current directory, they will not be downloaded again. 
 ```{}
 download_network_hdf5(network_type="generic") 
 download_network_hdf5(network_type="blood") 
