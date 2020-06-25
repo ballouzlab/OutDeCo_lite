@@ -34,7 +34,7 @@ Although not necessary, this method runs best on a HPC with 20GB+ RAM. However, 
 
 
 ## What is in this user guide
-This manual contains a usage guide and descriptions of the package. 
+This manual contains a usage guide and descriptions of the package. A step-by-step vignette can be found [here](https://github.com/sarbal/OutDeCo/blob/master/vignettes/vignette.md)
 
 
 ## How to get help
