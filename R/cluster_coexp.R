@@ -103,7 +103,7 @@ cluster_coexp <- function(coexp, runid = "", filt_min = 6, medK = 0.5,
     # Plot
     if (flag_plot == TRUE) {
 
-        heatmap.2( as.matrix(dist_temp), density.info = "none", trace = "none",
+        heatmap.2( coexp, density.info = "none", trace = "none",
                   col = col_map,
                   Rowv = clust_dend, Colv = clust_dend,
                   RowSideColors = merged_colors[m],
