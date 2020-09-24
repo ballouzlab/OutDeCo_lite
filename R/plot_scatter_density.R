@@ -2,7 +2,8 @@
 #'
 #' @param x values
 #' @param y values
-#' @param xlab x axis labe
+#' @param clusters output from cluster_coexp
+#' @param xlab x axis label
 #' @param ylab y axis label
 #' @param main main title
 #' @param xybreaks number of breaks for histogram
@@ -17,7 +18,7 @@
 #' @importFrom scales alpha
 #' @export
 
-plot_scatter_density <- function(x, y, clusters = FALSE, xlab = "", ylab = "", main = "",
+plot_scatter_density <- function(x, y, clusters = FALSE, clust_flag=FALSE, xlab = "", ylab = "", main = "",
                                  xybreaks = 100,  ...) {
 
     par(oma = c(3, 3, 0, 0))
@@ -26,6 +27,9 @@ plot_scatter_density <- function(x, y, clusters = FALSE, xlab = "", ylab = "", m
     layout(zones, widths = c(4/5, 1/5), heights = c(1/5, 4/5))
     x_max <- max(x)
     y_max <- max(y)
+    x_min <- min(x)
+    y_min <- min(y)
+
 
     if( length(clusters) > 1 ){
         n_clusters <- max(clusters$labels)
@@ -46,8 +50,8 @@ plot_scatter_density <- function(x, y, clusters = FALSE, xlab = "", ylab = "", m
     }
 
 
-    x_dens <- lapply(n_clusters:1, function(i) density(score_x_list[[i]],   from=0, to=x_max)  )
-    y_dens <- lapply(n_clusters:1, function(i) density(score_y_list[[i]],   from=0, to=y_max)  )
+    x_dens <- lapply(n_clusters:1, function(i) density(score_x_list[[i]], bw=0.01,  from=x_min, to=x_max)  )
+    y_dens <- lapply(n_clusters:1, function(i) density(score_y_list[[i]], bw=0.01,  from=y_min, to=y_max)  )
     x_dens_sums <- as.matrix( sapply(n_clusters:1, function(i) x_dens[[i]]$y ) )
     y_dens_sums <- as.matrix( sapply(n_clusters:1, function(i) y_dens[[i]]$y ))
   #  dens_max = max( c(rowSums(x_dens_sums), rowSums(y_dens_sums)))
@@ -55,7 +59,7 @@ plot_scatter_density <- function(x, y, clusters = FALSE, xlab = "", ylab = "", m
 
     # Plot main scatter
     par(mar = c(3, 3, 1, 1))
-    plot(x, y, pch = 21, main = main, xlim=c(0,x_max), ylim=c(0,y_max),
+    plot(x, y, pch = 21, main = main, xlim=c(x_min,x_max), ylim=c(y_min,y_max),
          axes=F, col= col_points, lwd=2, bg = "lightgray", ...)
      abline(0, 1, col = "grey", lwd = 3)
     axis(1)
@@ -70,13 +74,13 @@ plot_scatter_density <- function(x, y, clusters = FALSE, xlab = "", ylab = "", m
     dens_max = max(  rowSums(x_dens_sums) )
     plot(x_dens[[1]]$x, x_dens[[1]]$y,
          xlab="", ylab="",
-         xlim=c(0,x_max), ylim=c(0,dens_max),
+         xlim=c(x_min,x_max), ylim=c(0,dens_max),
          col=0, axes=F)
     axis(2)
     if (n_clusters > 1) {
       for (i in n_clusters:2) {
         polygon(
-          c(0, x_dens[[1]]$x, x_max),
+          c(x_min, x_dens[[1]]$x, x_max),
           c(0, rowSums(x_dens_sums[, 1:i]), 0) ,
           col = (color_legend[, 2])[i],
           border = NA
@@ -84,7 +88,7 @@ plot_scatter_density <- function(x, y, clusters = FALSE, xlab = "", ylab = "", m
       }
 
     }
-    polygon( c(0,x_dens[[1]]$x,x_max),
+    polygon( c(x_min,x_dens[[1]]$x,x_max),
              c(0,x_dens_sums[,1],0) ,
              col=(color_legend[,2])[1], border=NA)
 
@@ -95,7 +99,7 @@ plot_scatter_density <- function(x, y, clusters = FALSE, xlab = "", ylab = "", m
     dens_max = max(  rowSums(y_dens_sums) )
      plot(  y_dens[[1]]$y, y_dens[[1]]$y,
            xlab="", ylab="",
-           ylim=c(0,y_max), xlim=c(0,dens_max),
+           ylim=c(y_min,y_max), xlim=c(0,dens_max),
            col=0, axes=F)
     axis(1)
 
@@ -103,14 +107,14 @@ plot_scatter_density <- function(x, y, clusters = FALSE, xlab = "", ylab = "", m
       for (i in n_clusters:2) {
         polygon(
           c(0, rowSums(y_dens_sums[, 1:i]), 0) ,
-          c(0, y_dens[[1]]$x, y_max),
+          c(y_min, y_dens[[1]]$x, y_max),
           col = (color_legend[, 2])[i],
           border = NA
         )
       }
     }
     polygon( c(0,y_dens_sums[,1],0) ,
-             c(0,y_dens[[1]]$x,y_max),
+             c(y_min,y_dens[[1]]$x,y_max),
              col=(color_legend[,2])[1], border=NA)
 
     # Add x and y axes

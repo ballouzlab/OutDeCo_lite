@@ -1,39 +1,24 @@
 #' Plot network
 #'
-#' @param recur values
-#' @param fdrs output from calc_fdrs_recur
-#' @param n_max total number of studies
-#' @param flag_plot plot type
+#' @param sub_net network of genes
+#' @param clust_net output from cluster_coexp
+#' @param threshold weighted edge threshold to plot
+#' @param filt_min minimum cluster size to display in plot
 #' @examples
 #'
-#' network <- diag(1000)
+#' network <- diag(100)
 #' upper <- row(network) < col(network)
 #' network[upper] <- runif(sum(upper), 0,1 )
 #' network <- network + t(network)
 #' diag(network) <- 1
-#' rownames(network) <-paste0('gene', 1:1000 )
-#' colnames(network) <-paste0('gene', 1:1000 )
-#' i <- 1
-#' studies <- paste0('study', 1:10 )
-#' nettype <- 'random'
-#' dir <- 'out_test'
-#' label <- studies[i]
-#' filename <- 'output'
+#' rownames(network) <-paste0('gene', 1:100 )
+#' colnames(network) <-paste0('gene', 1:100 )
+#' clust_net <- cluster_coexp(network)
+#' plot_network(network, clust_net)
 #'
-#'
-#' cpm <- matrix(  abs(rnorm(10000)*10) , ncol=10, nrow=1000)
-#' rownames(cpm) <- paste0('gene', 1:1000 )
-#' colnames(cpm) <- studies
-#'
-#' groups <- c( rep(1,5), rep(2,5) )
-#' method <- 'wilcox'
-#'
-#' deg <- calc_DE(cpm, groups, method)
-#'
-#' subset_network(deg, network)
-#'
-#' @import viridis venn
+#' @import viridis venn 
 #' @importFrom gplots heatmap.2
+#' @importFrom igraph graph_from_data_frame V E delete_edges
 #' @export
 
 plot_network <- function(sub_net, clust_net, threshold = 0.5, filt_min = 6) {
@@ -49,16 +34,16 @@ plot_network <- function(sub_net, clust_net, threshold = 0.5, filt_min = 6) {
   # inet <- igraph::graph_from_adjacency_matrix(sub_net, weighted = T, mode = "undirected")
   inet <- igraph::graph_from_data_frame(pairs, directed=F)
   igraph::E(inet)$weight <- 1 - weights
-  igraph::E(inet)$width <- weights * 10
+  igraph::E(inet)$width <- (weights^2 * 10)
   igraph::E(inet)$edge.color <- "gray80"
-  o <- match(igraph::V(inet)$name, clust_net$clusters$genes)
+  igraph::E(inet)$color <- viridis(100)[ round(weights * 100) ]
+
+    o <- match(igraph::V(inet)$name, clust_net$clusters$genes)
 
   igraph::V(inet)$color <- as.character(clust_net$clusters$colors)[o]
 
   igraph::V(inet)$label <- ""
   igraph::V(inet)$size <- 4
-
-
 
   clust_size <- plyr::count(clust_net$clusters$labels )
   clust_keep <-  clust_size[clust_size[,2] < filt_min ,1]
@@ -69,11 +54,11 @@ plot_network <- function(sub_net, clust_net, threshold = 0.5, filt_min = 6) {
   igraph::V(inet)$size[f_n] <- 10
 
 
-  inet_sub <-  igraph::delete_edges(inet, igraph::E(inet)[weight < threshold])
+  inet_sub <-  igraph::delete_edges(inet, igraph::E(inet)[weights < threshold])
 
   plot(inet_sub )
   #, layout = layout_with_fr )
-
+  return(inet_sub)
 }
 
 

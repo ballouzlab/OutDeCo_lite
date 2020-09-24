@@ -7,6 +7,7 @@
 #' @param ylab y axis label
 #' @param main main title
 #' @param xybreaks number of breaks for histogram
+#' @param flag type of plot to draw (hist or density)
 #' @param ... plotting parameters
 #' @examples
 #'#'

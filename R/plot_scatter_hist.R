@@ -6,6 +6,7 @@
 #' @param ylab y axis label
 #' @param main main title
 #' @param xybreaks number of breaks for histogram
+#' @param clusters output from cluster_coexp
 #' @param ... plotting parameters
 #' @examples
 #'#'
