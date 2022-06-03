@@ -187,18 +187,36 @@ plot_compare_networks(net1, net2, clust_net1, clust_net2)
 data(go_slim)
 data(go_voc)
 filt <- colSums( go_slim ) < 5000 & colSums( go_slim ) >= 10
-gene_list <- sub_net$up
+gene_list <- clust_net$up$clusters$genes[clust_net$up$order]
 go_enrich <- gene_set_enrichment(gene_list, go_slim[filt,], go_voc) 
+plot_gene_set_enrichment( go_enrich, gene_list, go_slim[filt,]) 
 
 
+filt <- colSums( go_slim ) < 5000 & colSums( go_slim ) >= 10
+gene_list <- clust_net$down$clusters$genes[clust_net$down$order]
+go_enrich <- gene_set_enrichment(gene_list, go_slim[filt,], go_voc) 
+plot_gene_set_enrichment( go_enrich, gene_list, go_slim[filt,]) 
 ```
-<img src="./figures/go_enrich_overlap.png" height = 300/>
-
-#### b. Ranked
+#### b. Ranking
 ```{r} 
-ranked_gene_list <- deg_output
+gene_rankings <- order( log10(deg$degs$pvals), abs(deg$degs$log2_fc)  ) 
+names(gene_rankings) <- rownames(deg$degs)
+gene_rankings_rev <- rank(max(gene_rankings) - gene_rankings)  
+gene_sets <-  go_slim[filt,] 
+  
+  m <- match( rownames(gene_sets), names(gene_rankings_rev) )
+  f.g = !is.na(m)
+  f.r = m[f.g]
+  gene_sets = gene_sets[f.g,]
+  gene_rankings_rev = rank(gene_rankings_rev[f.r])
 
 
+
+gene_set_aucs <- gene_set_enrichment_aucs(gene_sets, gene_rankings_rev) 
+i = which.max(gene_set_aucs)  
+  boxplot(  gene_rankings_rev ~ gene_sets[,i], sub = round(gene_set_aucs[i],2), main=colnames(gene_sets)[i]) 
+  
+  
 ```
 <img src="./figures/go_enrich_ranked.png" height = 300/>
 
