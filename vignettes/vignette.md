@@ -93,7 +93,7 @@ network_type <- 'generic'
 sub_nets <- subset_network_hdf5(deg_output$degs, network_type, dir=GLOBAL_DIR)
 ```
 This returns a sub-network object with our data and useful properties.  
-### 2. Cluster genes and assess modules 
+### 2. Cluster genes
 ```{r}
 deg_sig <- sub_nets$deg_sig
 fc_sig  <- sub_nets$fc_sig
@@ -115,6 +115,8 @@ plot_coexpression_heatmap( sub_net$down, clust_net$down)
 ```
 <img src="./figures/plot_coexpression_heatmap_down.png" height = 300/>
 
+
+### 3. Assess gene connectivity
 You can look at the node degrees to get a sense of the global and local connectivities of the genes. 
 ```{r eval = FALSE}
 plot_scatter(node_degrees$up[,1]/node_degrees$n_genes_total, 
@@ -140,7 +142,7 @@ plot_scatter(node_degrees$down[m,1]/node_degrees$n_genes_total,
 ```
 <img src="./figures/plot_scatter_hist_down_colored.png" height = 300/> 
 
-
+### 4. Functional outliers 
 Finally, we can assess the functional outliers within the sub-networks. These are the genes that are DE but do not show local co-expression. Here, we consider genes forming a module if there are more than 6 genes. 
 ```{r eval=FALSE }
 filt_min <- 6 
@@ -165,7 +167,9 @@ EGAD::attr.human[match( clust_net$down$clusters$genes[genes_keep] , EGAD::attr.h
 <img src="./figures/genes_remaining.png" height = 300/> 
 
 
-Additionally, you can compare the co-expression properties of a single study. 
+
+### 5. Cross-network comparisons
+Additionally, you can compare the co-expression properties in different networks. 
 ```{r}
 net1 <- res_brain$sub_networks[[1]] 
 clust_net1 <- cluster_coexp( net1 , medK = medK.brain )
