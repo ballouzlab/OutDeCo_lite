@@ -179,3 +179,27 @@ plot_compare_networks(net1, net2, clust_net1, clust_net2)
 ```
 <img src="./figures/riverplot.png" height = 300/>
 
+
+
+### 6. Gene set enrichment analysis
+#### a. Overlap
+```{r} 
+data(go_slim)
+data(go_voc)
+filt <- colSums( go_slim ) < 5000 & colSums( go_slim ) >= 10
+gene_list <- sub_net$up
+go_enrich <- gene_set_enrichment(gene_list, go_slim[filt,], go_voc) 
+
+
+```
+<img src="./figures/go_enrich_overlap.png" height = 300/>
+
+#### b. Ranked
+```{r} 
+ranked_gene_list <- deg_output
+
+
+```
+<img src="./figures/go_enrich_ranked.png" height = 300/>
+
+
