@@ -4,7 +4,8 @@
 \name{pd_studies}
 \alias{pd_studies}
 \title{Metadata}
-\format{A matrix with 15 rows and 9 columns
+\format{
+A matrix with 15 rows and 9 columns
 \describe{
   \item{study_names}
   \item{Tissue}
@@ -16,7 +17,8 @@
   \item{Method}
   \item{Platform}
 }
- @source \url{}}
+ @source \url{}
+}
 \description{
 Metadata for Parkinson's disease studies used in the meta-analysis
 }

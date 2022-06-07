@@ -6,15 +6,14 @@ Date: 2020-02-09
 Author: Sara Ballouz [aut, cre], Jesse Gillis [aut, ctb]
 Maintainer: Sara Ballouz <sballouz@cshl.edu>
 Description: Stuff 
-    
 License: GPL-2
 Depends: R(>= 3.5)
 Encoding: UTF-8
 LazyData: true
-Imports: tidyr, plyr, DESeq2, dynamicTreeCut, edgeR, viridis, rhdf5, utils, gplots, stats, graphics, scales, venn
+Imports: tidyr, plyr, DESeq2, dynamicTreeCut, edgeR, viridis, rhdf5, utils, gplots, stats, graphics, scales, venn, EGAD, igraph, riverplot
 Suggests: knitr, rmarkdown, testthat
 VignetteBuilder: knitr
 biocViews: Software, FunctionalGenomics, SystemsBiology,
         GenePrediction, FunctionalPrediction, NetworkEnrichment,
         GraphAndNetwork, Network
-RoxygenNote: 7.0.2
+RoxygenNote: 7.1.2

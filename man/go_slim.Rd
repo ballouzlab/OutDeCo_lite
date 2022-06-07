@@ -4,11 +4,13 @@
 \name{go_slim}
 \alias{go_slim}
 \title{GO slim annotations}
-\format{\describe{
+\format{
+\describe{
   \item{}
 
 }
- @source \url{}}
+ @source \url{}
+}
 \description{
 
 }

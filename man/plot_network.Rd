@@ -7,43 +7,27 @@
 plot_network(sub_net, clust_net, threshold = 0.5, filt_min = 6)
 }
 \arguments{
-\item{recur}{values}
+\item{sub_net}{network of genes}
 
-\item{fdrs}{output from calc_fdrs_recur}
+\item{clust_net}{output from cluster_coexp}
 
-\item{n_max}{total number of studies}
+\item{threshold}{weighted edge threshold to plot}
 
-\item{flag_plot}{plot type}
+\item{filt_min}{minimum cluster size to display in plot}
 }
 \description{
 Plot network
 }
 \examples{
 
-network <- diag(1000)
+network <- diag(100)
 upper <- row(network) < col(network)
 network[upper] <- runif(sum(upper), 0,1 )
 network <- network + t(network)
 diag(network) <- 1
-rownames(network) <-paste0('gene', 1:1000 )
-colnames(network) <-paste0('gene', 1:1000 )
-i <- 1
-studies <- paste0('study', 1:10 )
-nettype <- 'random'
-dir <- 'out_test'
-label <- studies[i]
-filename <- 'output'
-
-
-cpm <- matrix(  abs(rnorm(10000)*10) , ncol=10, nrow=1000)
-rownames(cpm) <- paste0('gene', 1:1000 )
-colnames(cpm) <- studies
-
-groups <- c( rep(1,5), rep(2,5) )
-method <- 'wilcox'
-
-deg <- calc_DE(cpm, groups, method)
-
-subset_network(deg, network)
+rownames(network) <-paste0('gene', 1:100 )
+colnames(network) <-paste0('gene', 1:100 )
+clust_net <- cluster_coexp(network)
+plot_network(network, clust_net)
 
 }

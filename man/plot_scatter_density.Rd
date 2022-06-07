@@ -8,6 +8,7 @@ plot_scatter_density(
   x,
   y,
   clusters = FALSE,
+  clust_flag = FALSE,
   xlab = "",
   ylab = "",
   main = "",
@@ -20,7 +21,9 @@ plot_scatter_density(
 
 \item{y}{values}
 
-\item{xlab}{x axis labe}
+\item{clusters}{output from cluster_coexp}
+
+\item{xlab}{x axis label}
 
 \item{ylab}{y axis label}
 

@@ -4,11 +4,13 @@
 \name{go_voc}
 \alias{go_voc}
 \title{GO slim vocabulary}
-\format{\describe{
+\format{
+\describe{
   \item{GO} 
 
 }
- @source \url{}}
+ @source \url{}
+}
 \description{
 
 }

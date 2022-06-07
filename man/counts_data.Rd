@@ -5,12 +5,35 @@
 \name{counts_data}
 \alias{counts_data}
 \title{count data from TAF1 cohort}
-\format{A matrix with 60K rows and 26 columns
+\format{
+A matrix with 60K rows and 26 columns
 \describe{
   \item{chr}{chromosome}
 
 }
- @source \url{}}
+ @source \url{}
+
+A matrix with 60K rows and 26 columns
+\describe{
+  \item{chr}{chromosome}
+
+}
+ @source \url{}
+
+A matrix with 60K rows and 26 columns
+\describe{
+  \item{chr}{chromosome}
+
+}
+ @source \url{}
+
+A matrix with 60K rows and 26 columns
+\describe{
+  \item{chr}{chromosome}
+
+}
+ @source \url{}
+}
 \description{
 A dataset containing the expression level counts
 

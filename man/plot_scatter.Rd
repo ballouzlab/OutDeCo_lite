@@ -31,6 +31,8 @@ plot_scatter(
 
 \item{xybreaks}{number of breaks for histogram}
 
+\item{flag}{type of plot to draw (hist or density)}
+
 \item{...}{plotting parameters}
 }
 \description{

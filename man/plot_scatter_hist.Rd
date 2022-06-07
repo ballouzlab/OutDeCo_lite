@@ -28,6 +28,8 @@ plot_scatter_hist(
 
 \item{xybreaks}{number of breaks for histogram}
 
+\item{clusters}{output from cluster_coexp}
+
 \item{...}{plotting parameters}
 }
 \description{
