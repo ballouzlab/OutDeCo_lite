@@ -191,20 +191,7 @@ EGAD::attr.human[match( clust_net$down$clusters$genes[genes_keep] , EGAD::attr.h
 
 
 
-### 5. Cross-network comparisons
-Additionally, you can compare the co-expression properties in different networks. 
-```{r}
-net1 <- res_brain$sub_networks[[1]] 
-clust_net1 <- cluster_coexp( net1 , medK = medK.brain )
-net2 <-  res_blood$sub_networks[[1]] 
-clust_net2 <- cluster_coexp( net2 , medK = medK.blood )
-plot_compare_networks(net1, net2, clust_net1, clust_net2) 
-```
-<img src="./figures/riverplot.png" height = 300/>
-
-
-
-### 6. Gene set enrichment analysis
+### 5.  Gene set enrichment analysis
 #### a. Overlap
 ```{r} 
 data(go_slim)
@@ -220,6 +207,10 @@ gene_list <- clust_net$down$clusters$genes[clust_net$down$order]
 go_enrich <- gene_set_enrichment(gene_list, go_slim[filt,], go_voc) 
 plot_gene_set_enrichment( go_enrich, gene_list, go_slim[filt,]) 
 ```
+<img src="./figures/go_enrich.png" height = 300/>
+
+
+
 #### b. Ranking
 ```{r} 
 gene_rankings <- order( log10(deg$degs$pvals), abs(deg$degs$log2_fc)  ) 
@@ -237,10 +228,11 @@ gene_sets <-  go_slim[filt,]
 
 gene_set_aucs <- gene_set_enrichment_aucs(gene_sets, gene_rankings_rev) 
 i = which.max(gene_set_aucs)  
-  boxplot(  gene_rankings_rev ~ gene_sets[,i], sub = round(gene_set_aucs[i],2), main=colnames(gene_sets)[i]) 
-  
+ plot_roc(  gene_rankings_rev ~ gene_sets[,i], sub = round(gene_set_aucs[i],2), main=colnames(gene_sets)[i]) 
   
 ```
 <img src="./figures/go_enrich_ranked.png" height = 300/>
+
+
 
 
