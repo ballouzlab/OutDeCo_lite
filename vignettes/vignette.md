@@ -23,7 +23,7 @@ data(counts_data)
 data(labels) 
 ```
 
-### 2. Run a DE analysis 
+### 2. Run a DE analysis *** SKIP THIS 
 #### a. Using the wilcox.test
 Let's peform a sex differential expression analysis. Our data has individuals from family trios and quads, so we have to first pick the samples we need. 
 ```{r eval=F}
@@ -84,27 +84,50 @@ degs_input <- DESeq2::results(dds, contrast = c("conditions", "2", "0"))
 deg <- reformat_degs(degs_input, method) 
 ```
 
+
 ## Using the package to assess a differentially expressed gene list
-### 1. Getting co-expression networks for DE genes from an expression dataset
-With the list of DEGs, we can view their co-expression profiles with the provided aggregate co-expression networks.  
+### 1. Getting co-expression networks for DE genes. 
+#### a. From an expression experiment, we first run DE. 
 ```{r eval = FALSE}
 deg_output <- calc_DE(counts_data, groups, "wilcox")
 network_type <- 'generic'
 sub_nets <- subset_network_hdf5(deg_output$degs, network_type, dir=GLOBAL_DIR)
 ```
 This returns a sub-network object with our data and useful properties.  
+#### b. Alternatively, we can extract the subnetwork from a gene list (here sampling 100 genes from the X chromosome). 
+```{r eval = FALSE}
+gene_list <- sample(  EGAD::attr.human$name[EGAD::attr.human$chr=="chrX"], 100 )
+network_type <- 'generic'
+sub_nets <- subset_network_hdf5_gene_list(gene_list, network_type, dir=GLOBAL_DIR)
+```
+
+With these list of DEGs or genes, we can view their co-expression profiles with the provided aggregate co-expression networks.  
 ### 2. Cluster genes
 ```{r}
+# Extract data from the DE analysis 
 deg_sig <- sub_nets$deg_sig
 fc_sig  <- sub_nets$fc_sig
 sub_net <- sub_nets$sub_net
 node_degrees <-  sub_nets$node_degrees 
 medK <-  as.numeric(sub_nets$median)
+
+# Or if the analysis was from a gene list: 
+sub_net <- sub_nets$sub_net
+node_degrees <-  sub_nets$node_degrees 
+medK <-  as.numeric(sub_nets$median)
 ```
+
+
 Cluster and plot a heatmap of the binary co-expression sub-network using the ```cluster_coexp``` function.    
 ```{r}
 clust_net <- list()  
+# Extract data from the DE analysis 
+clust_net[["down"]]  <- cluster_coexp( sub_net$down, medK = medK, flag_plot = TRUE )
 clust_net[["up"]]  <- cluster_coexp( sub_net$up, medK = medK, flag_plot = TRUE )
+
+# Extract data from the DE analysis 
+clust_net[["genes"]]  <- cluster_coexp( sub_net, medK = medK, flag_plot = TRUE )
+
 ```
 <img src="./figures/plot_coexpression_heatmap_up.png" height = 300/>
 
@@ -143,7 +166,7 @@ plot_scatter(node_degrees$down[m,1]/node_degrees$n_genes_total,
 <img src="./figures/plot_scatter_hist_down_colored.png" height = 300/> 
 
 ### 4. Functional outliers 
-Finally, we can assess the functional outliers within the sub-networks. These are the genes that are DE but do not show local co-expression. Here, we consider genes forming a module if there are more than 6 genes. 
+Finally, we can assess the functional outliers within the sub-networks. These are the genes that are DE but do not show local co-expression. Here, we consider genes forming a module if there are more than 6 genes. We change this with the filt_min parameter. 
 ```{r eval=FALSE }
 filt_min <- 6 
 clust_size <- plyr::count(clust_net$down$clusters$labels )
