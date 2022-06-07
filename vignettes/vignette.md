@@ -123,10 +123,10 @@ Cluster and plot a heatmap of the binary co-expression sub-network using the ```
 clust_net <- list()  
 # Extract data from the DE analysis 
 clust_net[["down"]]  <- cluster_coexp( sub_net$down, medK = medK, flag_plot = TRUE )
-clust_net[["up"]]  <- cluster_coexp( sub_net$up, medK = medK, flag_plot = TRUE )
+clust_net[["up"]]  <- cluster_coexp( sub_net$up, medK = medK, flag_plot = FALSE )
 
 # Extract data from the DE analysis 
-clust_net[["genes"]]  <- cluster_coexp( sub_net, medK = medK, flag_plot = TRUE )
+clust_net[["genes"]]  <- cluster_coexp( sub_net, medK = medK, flag_plot = FALSE )
 
 ```
 <img src="./figures/plot_coexpression_heatmap_up.png" height = 300/>
@@ -135,6 +135,7 @@ Or cluster and then use the ```plot_coexpression_heatmap``` function to visualiz
 ```{r}
 clust_net[["down"]]  <- cluster_coexp( sub_net$down, medK = medK)
 plot_coexpression_heatmap( sub_net$down, clust_net$down)
+plot_network(sub_net$down, clust_net$down , medK)
 ```
 <img src="./figures/plot_coexpression_heatmap_down.png" height = 300/>
 
@@ -173,7 +174,7 @@ clust_size <- plyr::count(clust_net$down$clusters$labels )
 clust_keep <-  clust_size[clust_size[,2] < filt_min ,1]
 genes_keep <- !is.na(match( clust_net$down$clusters$labels, clust_keep))
 plot_coexpression_heatmap(  sub_net$down, clust_net$down, filt=TRUE)
-plot_network(sub_net$down, clust_net$down , 1 - medK)
+plot_network(sub_net$down, clust_net$down ,   medK)
 ```
 <img src="./figures/plot_coexpression_heatmap_down_filtered.png" height = 300/> <img src="./figures/plot_network_down.png" height = 300/> 
 
@@ -194,18 +195,19 @@ EGAD::attr.human[match( clust_net$down$clusters$genes[genes_keep] , EGAD::attr.h
 ### 5.  Gene set enrichment analysis
 #### a. Overlap
 ```{r} 
-data(go_slim)
+ 
+data(go_slim_entrez)
 data(go_voc)
-filt <- colSums( go_slim ) < 5000 & colSums( go_slim ) >= 10
+filt <- colSums( go_slim_entrez ) < 5000 & colSums( go_slim_entrez ) >= 10
 gene_list <- clust_net$up$clusters$genes[clust_net$up$order]
-go_enrich <- gene_set_enrichment(gene_list, go_slim[filt,], go_voc) 
-plot_gene_set_enrichment( go_enrich, gene_list, go_slim[filt,]) 
+go_enrich <- gene_set_enrichment(gene_list, go_slim_entrez[filt,], go_voc) 
+plot_gene_set_enrichment( go_enrich, gene_list, go_slim_entrez[filt,]) 
 
 
-filt <- colSums( go_slim ) < 5000 & colSums( go_slim ) >= 10
+filt <- colSums( go_slim_entrez ) < 5000 & colSums( go_slim_entrez ) >= 10
 gene_list <- clust_net$down$clusters$genes[clust_net$down$order]
-go_enrich <- gene_set_enrichment(gene_list, go_slim[filt,], go_voc) 
-plot_gene_set_enrichment( go_enrich, gene_list, go_slim[filt,]) 
+go_enrich <- gene_set_enrichment(gene_list, go_slim_entrez[filt,], go_voc) 
+plot_gene_set_enrichment( go_enrich, gene_list, go_slim_entrez[filt,]) 
 ```
 <img src="./figures/go_enrich.png" height = 300/>
 

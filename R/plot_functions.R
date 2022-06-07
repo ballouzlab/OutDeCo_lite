@@ -42,49 +42,50 @@ plot_coexpression_heatmap <- function(coexp, cluster_output,
 
 #' Plot gene set enrichment results
 #'
-#' @param data gene set enrichment results output 
-#' @param gene_list list of genes used as input into the gene set enrichment 
+#' @param data gene set enrichment results output
+#' @param gene_list list of genes used as input into the gene set enrichment
 #' @param gene_sets gene sets used as input into the gene set enrichment analysis
 #'
-#' @import stats utils graphics viridis RColorBrewer 
-#' @importFrom gplots heatmap.2 
+#' @import stats utils graphics viridis RColorBrewer
+#' @importFrom gplots heatmap.2
 #' @export
 #'
 
 plot_gene_set_enrichment <- function(data, gene_list, gene_sets) {
-   
-   colssig = RColorBrewer::colorpanel(100, "lightgrey", "red", "darkmagenta")
+
+   colssig = gplots::colorpanel(100, "lightgrey", "red", "darkmagenta")
 
    paths <- data$term
    paths_padj <- data$padj
    paths_pval <- data$pval
 
-   # Match gene list with genes in gene sets 
-   m <-  match( gene_list, rownames(gene_sets) ) 
+   # Match gene list with genes in gene sets
+   m <-  match( gene_list, rownames(gene_sets) )
    sub_gene_sets <- gene_sets[m,]
    sub_gene_sets[is.na(sub_gene_sets)] = 0
    rownames(sub_gene_sets) <- gene_list
 
-   # Match enrichment results with gene sets input 
+   # Match enrichment results with gene sets input
    m <- match( paths, colnames(gene_sets) )
    sub_gene_sets <- sub_gene_sets[,m]
 
    # Set up pval and padj matrices to plot
-   sub_gene_sets_pval <- (sub_gene_sets * 0 ) + 1 
-   sub_gene_sets_padj <- (sub_gene_sets * 0 ) + 1 
+   sub_gene_sets_pval <- (sub_gene_sets * 0 ) + 1
+   sub_gene_sets_padj <- (sub_gene_sets * 0 ) + 1
 
-   for(i in 1:length(paths_pval)){ 
+   for(i in 1:length(paths_pval)){
        sub_gene_sets_pval[ sub_gene_sets[,i]==1,i] = paths_pval[i]
        sub_gene_sets_padj[ sub_gene_sets[,i]==1,i] = paths_padj[i]
    }
 
    log10sub_gene_sets_pval = -log10(sub_gene_sets_pval)
    log10sub_gene_sets_padj = -log10(sub_gene_sets_padj)
-   log10sub_gene_sets_pval[!is.finite(log10sub_gene_sets_pval)] = 0 
-   log10sub_gene_sets_padj[!is.finite(log10sub_gene_sets_padj)] = 0 
-   
-   filt = colSums(log10sub_gene_sets_pval) > 0
- 
+   log10sub_gene_sets_pval[!is.finite(log10sub_gene_sets_pval)] = 0
+   log10sub_gene_sets_padj[!is.finite(log10sub_gene_sets_padj)] = 0
+
+  filt = colSums(log10sub_gene_sets_pval) > 0
+ #  gplots::heatmap.2(log10sub_gene_sets_pval[,]  , Rowv=F, Colv=F,
+
   gplots::heatmap.2(log10sub_gene_sets_pval[,filt]  , Rowv=F, Colv=F,
               col=colssig, cexRow = 0.7, cexCol = 0.7,
               notecol="black",
@@ -92,7 +93,7 @@ plot_gene_set_enrichment <- function(data, gene_list, gene_sets) {
               keysize=1,
               key.xlab="-log10 adjusted P-value",
               key.title="Enrichment", trace="none", density="none" )
-      
+
 }
 
 
@@ -116,7 +117,7 @@ plot_gene_set_enrichment <- function(data, gene_list, gene_sets) {
 #' clust_net <- cluster_coexp(network)
 #' plot_network(network, clust_net)
 #'
-#' @import viridis venn 
+#' @import viridis venn
 #' @importFrom gplots heatmap.2
 #' @importFrom igraph graph_from_data_frame V E delete_edges
 #' @export
