@@ -34,7 +34,7 @@ Although not necessary, this method runs best on a HPC with 20GB+ RAM. However, 
 
 
 ## What is in this user guide
-This manual contains a usage guide and descriptions of the package. A step-by-step vignette can be found [here](https://github.com/sarbal/OutDeCo/blob/master/vignettes/vignette.md)
+This manual contains a usage guide and descriptions of the package. A step-by-step vignette can be found [here](https://github.com/ballouzlab/OutDeCo_lite/blob/master/vignettes/vignette.md)
 
 
 ## How to get help
@@ -45,7 +45,7 @@ Ask us! Please reach out.
 Using devtools: 
 ```{r , eval=FALSE}
 # install.packages("devtools")
-devtools::install_github("sarbal/OutDeCo")
+devtools::install_github("ballouzlab/OutDeCo_lite")
 ```
 The co-expression networks provided are large, so before starting you will need to download them to your local working directroy. If the files already exist in your current directory, they will not be downloaded again. 
 ```{}
