@@ -60,7 +60,7 @@ gene_set_enrichment <- function(genes, genes.labels, voc){
 
 gene_set_enrichment_aucs <- function(gene_sets, gene_rankings){
 
-  
+
   m <- match( rownames(gene_sets), names(gene_rankings) )
   f.g = !is.na(m)
   f.r = m[f.g]
@@ -73,11 +73,11 @@ gene_set_enrichment_aucs <- function(gene_sets, gene_rankings){
 o = order(gene_rankings)
 nbins = round(length(o)/100)
 
-enrich_mat = sapply(1:length(gene_set_aucs), function(j) (sapply(0:nbins, function(i) sum(gene_sets[o,j][ (1:100)+ i*100 ]  )  )  ) )  
-enrich_mat[is.na(enrich_mat)] = 0 
+enrich_mat = sapply(1:length(gene_set_aucs), function(j) (sapply(0:nbins, function(i) sum(gene_sets[o,j][ (1:100)+ i*100 ]  )  )  ) )
+enrich_mat[is.na(enrich_mat)] = 0
 enrich_mat = t(enrich_mat)/colSums(enrich_mat)
-#enrich_mat = sapply(1:length(gene_set_aucs), function(j) (sapply(0:nbins, function(i) sum(gene_sets[o,j][ (1:1000)+ i*1000 ]  )  )  ) )  
-heatmap.2(  (enrich_mat), col=colssig, trace="none", density="none", Rowv=F, Colv=F)
+#enrich_mat = sapply(1:length(gene_set_aucs), function(j) (sapply(0:nbins, function(i) sum(gene_sets[o,j][ (1:1000)+ i*1000 ]  )  )  ) )
+#heatmap.2(  (enrich_mat), col=colssig, trace="none", density="none", Rowv=F, Colv=F)
 
   return (gene_set_aucs)
 

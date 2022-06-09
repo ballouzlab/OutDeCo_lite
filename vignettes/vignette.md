@@ -1,3 +1,8 @@
+---
+output:
+  pdf_document: default
+  html_document: default
+---
 # OutDeCo <img src="./figures/sticker2.gif" align="right" height = 150/>
 *OutDeCo*: Outlier detection through co-expression. The purpose of this package is to assess genes - more specifically differentially expressed genes - with respect to their co-expression properties. 
 
@@ -217,20 +222,18 @@ plot_gene_set_enrichment( go_enrich, gene_list, go_slim_entrez[filt,])
 ```{r} 
 gene_rankings <- order( log10(deg$degs$pvals), abs(deg$degs$log2_fc)  ) 
 names(gene_rankings) <- rownames(deg$degs)
-gene_rankings_rev <- rank(max(gene_rankings) - gene_rankings)  
-gene_sets <-  go_slim[filt,] 
-  
-  m <- match( rownames(gene_sets), names(gene_rankings_rev) )
+gene_rankings_rev <- rank(max(gene_rankings) - gene_rankings) 
+ 
+  m <- match( rownames(go_slim_entrez), names(gene_rankings_rev) )
   f.g = !is.na(m)
   f.r = m[f.g]
-  gene_sets = gene_sets[f.g,]
+  gene_sets = go_slim_entrez[f.g,]
   gene_rankings_rev = rank(gene_rankings_rev[f.r])
 
 
 
 gene_set_aucs <- gene_set_enrichment_aucs(gene_sets, gene_rankings_rev) 
-i = which.max(gene_set_aucs)  
- plot_roc(  gene_rankings_rev ~ gene_sets[,i], sub = round(gene_set_aucs[i],2), main=colnames(gene_sets)[i]) 
+plot_roc(  gene_rankings_rev ~ gene_sets[,i], sub = round(gene_set_aucs[i],2), main=colnames(gene_sets)[i]) 
   
 ```
 <img src="./figures/go_enrich_ranked.png" height = 300/>

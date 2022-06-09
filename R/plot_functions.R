@@ -97,6 +97,17 @@ plot_gene_set_enrichment <- function(data, gene_list, gene_sets) {
 }
 
 
+plot_gene_set_enrichment_aucs <- function(data, gene_list, gene_sets) {
+
+  colssig = gplots::colorpanel(100, "lightgrey", "red", "darkmagenta")
+
+  hist(gene_set_aucs)
+
+
+}
+
+
+
 
 
 #' Plot network
@@ -433,8 +444,5 @@ plot_scatter_hist <- function(x, y, xlab = "", ylab = "", main = "", xybreaks = 
     mtext(ylab, side = 2, line = 1, outer = TRUE, adj = 0, at = 0.5 * (mean(y) - min(y))/(max(y) - min(y)))
 
 }
-
-
-
 
 
