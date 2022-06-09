@@ -234,7 +234,7 @@ gene_rankings_rev <- rank(max(gene_rankings) - gene_rankings)
 
 
 gene_set_aucs <- gene_set_enrichment_aucs(gene_sets, gene_rankings_rev) 
-plot_gene_set_enrichment_ranked( gene_set_aucs, gene_rankings_rev, gene_list, go_slim_entrez[,filt]) 
+plot_gene_set_enrichment_ranked( gene_set_aucs, gene_rankings_rev, gene_list, go_slim_entrez) 
   
 ```
 <img src="./figures/go_enrich_ranked.png" height = 300/>
