@@ -110,6 +110,7 @@ With these list of DEGs or genes, we can view their co-expression profiles with 
 ### 2. Cluster genes
 ```{r}
 # Extract data from the DE analysis 
+data(sub_nets) # so you do not need to run the DE analysis again
 deg_sig <- sub_nets$deg_sig
 fc_sig  <- sub_nets$fc_sig
 sub_net <- sub_nets$sub_net
