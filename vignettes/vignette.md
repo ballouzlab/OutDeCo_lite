@@ -180,7 +180,7 @@ clust_size <- plyr::count(clust_net$down$clusters$labels )
 clust_keep <-  clust_size[clust_size[,2] < filt_min ,1]
 genes_keep <- !is.na(match( clust_net$down$clusters$labels, clust_keep))
 plot_coexpression_heatmap(  sub_net$down, clust_net$down, filt=TRUE)
-plot_network(sub_net$down, clust_net$down ,   medK)
+plot_network(1-sub_net$down, clust_net$down , 1 - medK)
 ```
 <img src="./figures/plot_coexpression_heatmap_down_filtered.png" height = 300/> <img src="./figures/plot_network_down.png" height = 300/> 
 
