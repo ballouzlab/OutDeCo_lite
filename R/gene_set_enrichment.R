@@ -1,7 +1,7 @@
 #' Gene set enrichment
 #'
 #' @param genes an array of numeric values
-#' @param genes.labels GO matrix or some such
+#' @param gene_sets GO matrix or some such
 #' @param voc term descriptions
 #' @return \code{results}
 #' @examples
@@ -12,29 +12,29 @@
 #' @export
 
 
-gene_set_enrichment <- function(genes, genes.labels, voc){
+gene_set_enrichment <- function(genes, gene_sets, voc){
 
-  genes.names = rownames(genes.labels)
-  labels.names = colnames(genes.labels)
-  genes.counts = rowSums(genes.labels)
-  labels.counts = colSums(genes.labels)              			# p
+  genes_names = rownames(gene_sets)
+  sets_names = colnames(gene_sets)
+  genes_counts = rowSums(gene_sets)
+  sets_counts = colSums(gene_sets)              			# p
 
-  m = match ( genes, genes.names )
+  m = match ( genes, genes_names )
   filt.genes  = !is.na(m)
-  filt.labels = m[filt.genes]
+  filt.sets = m[filt.genes]
 
 
-  labels.counts.set = rep( sum(filt.genes), length(labels.counts) )	# g
+  sets_counts.hit = rep( sum(filt.genes), length(sets_counts) )	# g
 
-  m = match (labels.names, voc[,1])
+  m = match (sets_names, voc[,1])
   v.f = !is.na(m)
   v.g = m[v.f]
 
-  universe = rep ( dim(genes.labels)[1], dim(genes.labels)[2])
-  if(  length(filt.labels) == 1 ) { genes.counts.set = genes.labels[filt.labels,] }
-  else { genes.counts.set = colSums(genes.labels[filt.labels,]) }             ## does weird things with 0 sets
+  universe = rep ( dim(gene_sets)[1], dim(gene_sets)[2])
+  if(  length(filt.sets) == 1 ) { gene_counts.hit = gene_sets[filt.sets,] }
+  else { gene_counts.hit = colSums(gene_sets[filt.sets,]) }             ## does weird things with 0 sets
 
-  test =  cbind( (genes.counts.set -1) , labels.counts, universe-labels.counts, labels.counts.set)
+  test =  cbind( (gene_counts.hit -1) , sets_counts, universe-sets_counts, sets_counts.hit)
   pvals = phyper(test[,1], test[,2], test[,3], test[,4], lower.tail=F)
   sigs = pvals < ( 0.05/length(pvals) )
   pvals.adj = p.adjust( pvals, method="BH")

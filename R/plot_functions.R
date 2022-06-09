@@ -130,7 +130,7 @@ plot_gene_set_enrichment_ranked <- function(data, gene_rankings, gene_list, gene
   plot( data, -log10(pvals), pch=19, bty="n", xlab="Gene set AUCs", ylab="-log10 P-value", cex=sig, col=sig)
 
 
-  print( cbind( sig, pvals, padj, nsets))
+  # print( cbind( sig, pvals, padj, nsets))
 
 }
 
