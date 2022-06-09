@@ -4,12 +4,12 @@
 \alias{gene_set_enrichment}
 \title{Gene set enrichment}
 \usage{
-gene_set_enrichment(genes, genes.labels, voc)
+gene_set_enrichment(genes, gene_sets, voc)
 }
 \arguments{
 \item{genes}{an array of numeric values}
 
-\item{genes.labels}{GO matrix or some such}
+\item{gene_sets}{GO matrix or some such}
 
 \item{voc}{term descriptions}
 }

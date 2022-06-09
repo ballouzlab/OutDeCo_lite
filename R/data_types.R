@@ -20,82 +20,17 @@ NULL
 
 
 
-#' @name counts_data
-#' @title count data from TAF1 cohort
-#'
-#' @description
-#' A dataset containing the expression level counts
-#'
-#'
-#' @docType data
-#'
-#' @format A matrix with 60K rows and 26 columns
-#' \describe{
-#'   \item{chr}{chromosome}
-#'
-#' }
-#'  @source \url{}
-#'
-#' @rdname counts_data
-#'
-NULL
-
-
-
-#' @name counts_data
-#' @title count data from TAF1 cohort
-#'
-#' @description
-#' A dataset containing the expression level counts
-#'
-#'
-#' @docType data
-#'
-#' @format A matrix with 60K rows and 26 columns
-#' \describe{
-#'   \item{chr}{chromosome}
-#'
-#' }
-#'  @source \url{}
-#'
-#' @rdname counts_data
-#'
-NULL
-
-
-
-#' @name counts_data
-#' @title count data from TAF1 cohort
-#'
-#' @description
-#' A dataset containing the expression level counts
-#'
-#'
-#' @docType data
-#'
-#' @format A matrix with 60K rows and 26 columns
-#' \describe{
-#'   \item{chr}{chromosome}
-#'
-#' }
-#'  @source \url{}
-#'
-#' @rdname counts_data
-#'
-NULL
-
-
 
 #' @name go_slim
 #' @title GO slim annotations
 #'
 #' @description
-#'  
+#'
 #'
 #'
 #' @docType data
 #'
-#' @format  
+#' @format
 #' \describe{
 #'   \item{}
 #'
@@ -111,14 +46,14 @@ NULL
 #' @title GO slim vocabulary
 #'
 #' @description
-#'  
+#'
 #'
 #'
 #' @docType data
 #'
-#' @format  
+#' @format
 #' \describe{
-#'   \item{GO} 
+#'   \item{GO}
 #'
 #' }
 #'  @source \url{}
@@ -129,7 +64,7 @@ NULL
 
 
 #' @name pd_studies
-#' @title Metadata 
+#' @title Metadata
 #'
 #' @description
 #' Metadata for Parkinson's disease studies used in the meta-analysis
@@ -154,29 +89,5 @@ NULL
 #' @rdname pd_studies
 #'
 NULL
-
-
-
-
-#' @name counts_data
-#' @title count data from TAF1 cohort
-#'
-#' @description
-#' A dataset containing the expression level counts
-#'
-#'
-#' @docType data
-#'
-#' @format A matrix with 60K rows and 26 columns
-#' \describe{
-#'   \item{chr}{chromosome}
-#'
-#' }
-#'  @source \url{}
-#'
-#' @rdname counts_data
-#'
-NULL
-
 
 
