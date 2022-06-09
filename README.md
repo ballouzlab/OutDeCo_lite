@@ -49,6 +49,7 @@ devtools::install_github("ballouzlab/OutDeCo_lite")
 ```
 The co-expression networks provided are large, so before starting you will need to download them to your local working directroy. If the files already exist in your current directory, they will not be downloaded again. 
 ```{}
+library(OutDeCo)
 download_network_hdf5(network_type="generic") 
 download_network_hdf5(network_type="blood") 
 download_network_hdf5(network_type="brain") 
