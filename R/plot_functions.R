@@ -97,12 +97,40 @@ plot_gene_set_enrichment <- function(data, gene_list, gene_sets) {
 }
 
 
-plot_gene_set_enrichment_aucs <- function(data, gene_list, gene_sets) {
+plot_gene_set_enrichment_ranked <- function(data, gene_rankings, gene_list, gene_sets, psig = 0.05) {
 
-  colssig = gplots::colorpanel(100, "lightgrey", "red", "darkmagenta")
+  par(mfrow=c(2,2))
+  n <- dim(gene_sets)[1]
+  nn <- dim(gene_sets)[2]
 
-  hist(gene_set_aucs)
+  rocs <- lapply(1:nn, function(i) get_roc( gene_rankings, gene_sets[, i]))
+  pvals <- unlist(lapply(1:nn, function(i) wilcox.test( gene_rankings[gene_sets[, i]==1],  gene_rankings[gene_sets[, i]==0])$p.val ))
+  # pvals <- unlist(lapply(1:nn, function(i) wilcox.test( gene_rankings[gene_sets[, i]==1],  gene_rankings[gene_sets[, i]==0], alt="g")$p.val ))
 
+
+  padj <- p.adjust(pvals)
+  sig = (padj<psig) * 1  + 1
+  names(sig) = colnames(gene_sets)
+
+
+  # Panel 1
+  plot(-10,-10, xlim=c(0,1), ylim=c(0,1),xlab = "FPR", ylab = "TPR", bty = "n"   )
+  ll <- lapply(1:nn, function(i) lines( rocs[[i]][,1],rocs[[i]][,2] , col=EGAD::make_transparent(sig[i],100), lwd=sig[i] ))
+  ll <- lapply(1:which(sig==2), function(i) lines( rocs[[i]][,1],rocs[[i]][,2] , col=EGAD::make_transparent(sig[i],100), lwd=sig[i] ))
+
+  # Panel 2
+  nsets  <- colSums(gene_sets)
+
+  hist(nsets, breaks=30, col=viridis(10)[5], border=NA, xlab="Gene set size", main="")
+
+  # Panel 3
+  hist(data, breaks=30, col=viridis(10)[5], border=NA, xlab="Gene set AUCs", main="")
+
+  # Panel 4
+  plot( data, -log10(pvals), pch=19, bty="n", xlab="Gene set AUCs", ylab="-log10 P-value", cex=sig, col=sig)
+
+
+  print( cbind( sig, pvals, padj, nsets))
 
 }
 
