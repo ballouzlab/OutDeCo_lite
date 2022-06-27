@@ -95,44 +95,33 @@ deg <- reformat_degs(degs_input, method)
 #### a. From an expression experiment, we first run DE. 
 ```{r eval = FALSE}
 deg_output <- calc_DE(counts_data, groups, "wilcox")
+```
+
+#### b. Extract the up-regulated genes and down-regulated gene networks and properties
+With these list of DEGs, we can view their co-expression profiles with the provided aggregate co-expression networks.  
+```{r eva=FALSE}
 network_type <- 'generic'
 sub_nets <- subset_network_hdf5(deg_output$degs, network_type, dir=GLOBAL_DIR)
 ```
 This returns a sub-network object with our data and useful properties.  
-#### b. Alternatively, we can extract the subnetwork from a gene list (here sampling 100 genes from the X chromosome). 
-```{r eval = FALSE}
-gene_list <- sample(  EGAD::attr.human$name[EGAD::attr.human$chr=="chrX"], 100 )
-network_type <- 'generic'
-sub_nets <- subset_network_hdf5_gene_list(gene_list, network_type, dir=GLOBAL_DIR)
-```
 
-With these list of DEGs or genes, we can view their co-expression profiles with the provided aggregate co-expression networks.  
 ### 2. Cluster genes
 ```{r}
 # Extract data from the DE analysis 
-data(sub_nets) # so you do not need to run the DE analysis again
+# data(sub_nets) # so you do not need to run the DE analysis again
 deg_sig <- sub_nets$deg_sig
 fc_sig  <- sub_nets$fc_sig
 sub_net <- sub_nets$sub_net
 node_degrees <-  sub_nets$node_degrees 
 medK <-  as.numeric(sub_nets$median)
-
-# Or if the analysis was from a gene list: 
-sub_net <- sub_nets$sub_net
-node_degrees <-  sub_nets$node_degrees 
-medK <-  as.numeric(sub_nets$median)
 ```
-
 
 Cluster and plot a heatmap of the binary co-expression sub-network using the ```cluster_coexp``` function.    
 ```{r}
 clust_net <- list()  
-# Extract data from the DE analysis 
+# Run the clustering on down and up regulated genes 
 clust_net[["down"]]  <- cluster_coexp( sub_net$down, medK = medK, flag_plot = TRUE )
 clust_net[["up"]]  <- cluster_coexp( sub_net$up, medK = medK, flag_plot = FALSE )
-
-# Extract data from the DE analysis 
-clust_net[["genes"]]  <- cluster_coexp( sub_net, medK = medK, flag_plot = FALSE )
 
 ```
 <img src="./figures/plot_coexpression_heatmap_up.png" height = 300/>
@@ -145,8 +134,25 @@ plot_network(sub_net$down, clust_net$down , medK)
 ```
 <img src="./figures/plot_coexpression_heatmap_down.png" height = 300/>
 
+### 3. Alternatively, we can extract the subnetwork from a gene list (here sampling 100 genes from the X chromosome). 
+```{r eval = FALSE}
+gene_list <- sample(  EGAD::attr.human$name[EGAD::attr.human$chr=="chrX"], 100 )
+network_type <- 'generic'
+sub_nets <- subset_network_hdf5_gene_list(gene_list, network_type, dir=GLOBAL_DIR)
+ 
+ 
+sub_net <- sub_nets$sub_net
+node_degrees <-  sub_nets$node_degrees 
+medK <-  as.numeric(sub_nets$median)
 
-### 3. Assess gene connectivity
+clust_net = list() 
+
+clust_net[["genes"]]  <- cluster_coexp( sub_net, medK = medK, flag_plot = FALSE )
+```
+
+
+
+### 4. Assess gene connectivity
 You can look at the node degrees to get a sense of the global and local connectivities of the genes. 
 ```{r eval = FALSE}
 plot_scatter(node_degrees$up[,1]/node_degrees$n_genes_total, 
@@ -172,7 +178,7 @@ plot_scatter(node_degrees$down[m,1]/node_degrees$n_genes_total,
 ```
 <img src="./figures/plot_scatter_hist_down_colored.png" height = 300/> 
 
-### 4. Functional outliers 
+### 5. Functional outliers 
 Finally, we can assess the functional outliers within the sub-networks. These are the genes that are DE but do not show local co-expression. Here, we consider genes forming a module if there are more than 6 genes. We change this with the filt_min parameter. 
 ```{r eval=FALSE }
 filt_min <- 6 
@@ -198,7 +204,7 @@ EGAD::attr.human[match( clust_net$down$clusters$genes[genes_keep] , EGAD::attr.h
 
 
 
-### 5.  Gene set enrichment analysis
+### 6.  Gene set enrichment analysis
 #### a. Overlap
 ```{r} 
  
