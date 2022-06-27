@@ -147,7 +147,7 @@ medK <-  as.numeric(sub_nets$median)
 
 clust_net = list() 
 
-clust_net[["genes"]]  <- cluster_coexp( sub_net, medK = medK, flag_plot = FALSE )
+clust_net[["genes"]]  <- cluster_coexp( sub_net$genes, medK = medK, flag_plot = FALSE )
 ```
 
 
